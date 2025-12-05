@@ -18,23 +18,39 @@ function closeWindow(id) {
     document.getElementById(id).classList.add("hidden");
 }
 
-// Dragging system
+// Dragging system - improved to avoid memory leaks
+const dragState = new WeakMap();
+
 function makeDraggable(win) {
+    // Prevent adding duplicate listeners
+    if (dragState.has(win)) return;
+    
     const bar = win.querySelector(".titlebar");
-    let offsetX = 0, offsetY = 0, isDown = false;
+    const state = { offsetX: 0, offsetY: 0, isDown: false };
+    dragState.set(win, state);
 
     bar.addEventListener("mousedown", (e) => {
-        isDown = true;
-        offsetX = e.clientX - win.offsetLeft;
-        offsetY = e.clientY - win.offsetTop;
+        state.isDown = true;
+        state.offsetX = e.clientX - win.offsetLeft;
+        state.offsetY = e.clientY - win.offsetTop;
         win.style.zIndex = Date.now();
     });
-
-    document.addEventListener("mouseup", () => isDown = false);
-
-    document.addEventListener("mousemove", (e) => {
-        if (!isDown) return;
-        win.style.left = `${e.clientX - offsetX}px`;
-        win.style.top = `${e.clientY - offsetY}px`;
-    });
 }
+
+// Single global event listeners for mouse events (instead of per-window)
+document.addEventListener("mouseup", () => {
+    document.querySelectorAll('.window').forEach(win => {
+        const state = dragState.get(win);
+        if (state) state.isDown = false;
+    });
+});
+
+document.addEventListener("mousemove", (e) => {
+    document.querySelectorAll('.window').forEach(win => {
+        const state = dragState.get(win);
+        if (state && state.isDown) {
+            win.style.left = `${e.clientX - state.offsetX}px`;
+            win.style.top = `${e.clientY - state.offsetY}px`;
+        }
+    });
+});
