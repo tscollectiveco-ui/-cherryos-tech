@@ -258,7 +258,7 @@ function showHomescreen() {
         setupUnlock();
         setupWidgets();
         setupExpandablePanels();
-        setupTerminal();
+        setupTerminalWithAI();
     }
 }
 
@@ -315,63 +315,6 @@ function togglePanelExpand(panel) {
     }
 }
 
-// Setup terminal functionality
-function setupTerminal() {
-    const termInput = document.getElementById('terminal-input');
-    const termOutput = document.getElementById('terminal-output');
-    
-    if (!termInput || !termOutput) return;
-    
-    const commands = {
-        'help': '♥ Available: help, whoami, date, clear, hack, scan, pwd, ls',
-        'whoami': 'cherry',
-        'pwd': '/home/cherry/pentest',
-        'ls': 'exploits/  payloads/  targets.txt  notes.md',
-        'date': () => new Date().toString(),
-        'clear': () => 'CLEAR',
-        'hack': '[♥] Initiating hack sequence... Access granted!',
-        'scan': '[+] Scanning network... Found 3 vulnerable hosts ♥',
-    };
-    
-    termInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const cmd = termInput.value.trim().toLowerCase();
-            if (cmd) {
-                // Add command line
-                const cmdLine = document.createElement('div');
-                cmdLine.className = 'terminal-line';
-                cmdLine.textContent = `cherry@pentest:~$ ${termInput.value}`;
-                termOutput.appendChild(cmdLine);
-                
-                // Process command
-                if (cmd === 'clear') {
-                    // Safely clear terminal output
-                    while (termOutput.firstChild) {
-                        termOutput.removeChild(termOutput.firstChild);
-                    }
-                } else {
-                    const response = commands[cmd];
-                    const outputLine = document.createElement('div');
-                    outputLine.className = 'terminal-line output';
-                    if (typeof response === 'function') {
-                        outputLine.textContent = response();
-                    } else if (response) {
-                        outputLine.textContent = response;
-                    } else {
-                        outputLine.textContent = `Command not found: ${cmd}. Type 'help' ♥`;
-                        outputLine.style.color = '#ffd700';
-                    }
-                    termOutput.appendChild(outputLine);
-                }
-                
-                termOutput.scrollTop = termOutput.scrollHeight;
-                termInput.value = '';
-            }
-        }
-    });
-}
-
 // Export for use in os.js
 window.showHomescreen = showHomescreen;
 window.unlockToDesktop = unlockToDesktop;
@@ -397,6 +340,9 @@ const aiTips = [
     '💡 Tip: Click ⤢ to expand any panel!',
 ];
 
+// Store interval ID for cleanup
+let aiTipIntervalId = null;
+
 function initAIHelper() {
     const aiContent = document.getElementById('ai-helper-content');
     if (!aiContent) return;
@@ -407,8 +353,14 @@ function initAIHelper() {
         addAIMessage(tip, 'default');
     }, 3000);
     
-    // Periodically show tips
-    setInterval(() => {
+    // Periodically show tips (store ID for potential cleanup)
+    aiTipIntervalId = setInterval(() => {
+        // Only show tips if homescreen is still visible
+        const homescreen = document.getElementById('homescreen');
+        if (!homescreen || !homescreen.classList.contains('visible')) {
+            clearInterval(aiTipIntervalId);
+            return;
+        }
         if (Math.random() > 0.7) {
             const tip = aiTips[Math.floor(Math.random() * aiTips.length)];
             addAIMessage(tip, 'default');
@@ -426,7 +378,16 @@ function addAIMessage(message, type = 'default') {
     if (type === 'warning') msgDiv.classList.add('warning');
     if (type === 'thinking') msgDiv.classList.add('thinking');
     
-    msgDiv.innerHTML = `<span class="ai-label">♥ AI:</span> ${message}`;
+    // Create label span safely
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'ai-label';
+    labelSpan.textContent = '♥ AI: ';
+    msgDiv.appendChild(labelSpan);
+    
+    // Add message text safely using textContent
+    const textNode = document.createTextNode(message);
+    msgDiv.appendChild(textNode);
+    
     aiContent.appendChild(msgDiv);
     aiContent.scrollTop = aiContent.scrollHeight;
     
@@ -447,7 +408,7 @@ function aiReviewCommand(cmd) {
         const thinkingMsg = aiContent.querySelector('.ai-message.thinking');
         if (thinkingMsg) thinkingMsg.remove();
         
-        // Get response
+        // Get response - use predefined responses only (safe)
         const response = aiResponses[cmd] || aiResponses['default'];
         const type = cmd === 'hack' || cmd === 'scan' ? 'success' : 
                      aiResponses[cmd] ? 'default' : 'warning';
@@ -456,24 +417,24 @@ function aiReviewCommand(cmd) {
     }, 500);
 }
 
-// Override terminal to hook AI reviews
-const originalSetupTerminal = setupTerminal;
-setupTerminal = function() {
+// Shared terminal commands (single source of truth)
+const terminalCommands = {
+    'help': '♥ Available: help, whoami, date, clear, hack, scan, pwd, ls',
+    'whoami': 'cherry',
+    'pwd': '/home/cherry/pentest',
+    'ls': 'exploits/  payloads/  targets.txt  notes.md',
+    'date': () => new Date().toString(),
+    'clear': () => 'CLEAR',
+    'hack': '[♥] Initiating hack sequence... Access granted!',
+    'scan': '[+] Scanning network... Found 3 vulnerable hosts ♥',
+};
+
+// Setup terminal with AI integration
+function setupTerminalWithAI() {
     const termInput = document.getElementById('terminal-input');
     const termOutput = document.getElementById('terminal-output');
     
     if (!termInput || !termOutput) return;
-    
-    const commands = {
-        'help': '♥ Available: help, whoami, date, clear, hack, scan, pwd, ls',
-        'whoami': 'cherry',
-        'pwd': '/home/cherry/pentest',
-        'ls': 'exploits/  payloads/  targets.txt  notes.md',
-        'date': () => new Date().toString(),
-        'clear': () => 'CLEAR',
-        'hack': '[♥] Initiating hack sequence... Access granted!',
-        'scan': '[+] Scanning network... Found 3 vulnerable hosts ♥',
-    };
     
     termInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -495,7 +456,7 @@ setupTerminal = function() {
                         termOutput.removeChild(termOutput.firstChild);
                     }
                 } else {
-                    const response = commands[cmd];
+                    const response = terminalCommands[cmd];
                     const outputLine = document.createElement('div');
                     outputLine.className = 'terminal-line output';
                     if (typeof response === 'function') {
@@ -517,4 +478,4 @@ setupTerminal = function() {
     
     // Initialize AI helper
     initAIHelper();
-};
+}
