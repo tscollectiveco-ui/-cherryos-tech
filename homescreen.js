@@ -1,77 +1,178 @@
-// Homescreen functionality
+// Homescreen functionality - Feminine Hacker Edition
 
-// Update time display
-function updateTime() {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, '0');
+// Matrix rain effect with pink hearts and characters
+function initMatrixRain() {
+    const canvas = document.getElementById('matrix-rain');
+    if (!canvas) return;
     
-    // 12-hour format
-    const displayHours = hours % 12 || 12;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     
-    const timeElement = document.querySelector('.time-display');
-    if (timeElement) {
-        timeElement.textContent = `${displayHours}:${minutes}`;
+    const chars = '♥01アイウエオカキクケコ10♥HACK3R♥';
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    
+    for (let i = 0; i < columns; i++) {
+        drops[i] = Math.random() * -100;
     }
     
-    // Update date
-    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    const dateElement = document.querySelector('.date-display');
-    if (dateElement) {
-        dateElement.textContent = now.toLocaleDateString('en-US', options);
+    function draw() {
+        ctx.fillStyle = 'rgba(26, 10, 20, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#ff69b4';
+        ctx.font = fontSize + 'px monospace';
+        
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
     }
     
-    // Update greeting based on time of day
-    updateGreeting(hours);
+    setInterval(draw, 50);
+    
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
 }
 
-// Update greeting based on time
-function updateGreeting(hours) {
-    const greetingElement = document.querySelector('.greeting');
-    if (!greetingElement) return;
-    
-    let greeting = '';
-    if (hours >= 5 && hours < 12) {
-        greeting = 'Good morning 🌸';
-    } else if (hours >= 12 && hours < 17) {
-        greeting = 'Good afternoon 🌷';
-    } else if (hours >= 17 && hours < 21) {
-        greeting = 'Good evening 🌺';
-    } else {
-        greeting = 'Sweet dreams 🌙';
-    }
-    
-    greetingElement.textContent = greeting;
-}
-
-// Create floating particles
+// Create floating heart particles
 function createParticles() {
     const homescreen = document.getElementById('homescreen');
     if (!homescreen) return;
     
-    const particleCount = 15;
+    const particleCount = 12;
+    const hearts = ['♥', '♡', '❤', '💗'];
     
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
+        particle.textContent = hearts[Math.floor(Math.random() * hearts.length)];
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
         particle.style.animationDelay = Math.random() * 5 + 's';
-        particle.style.animationDuration = (4 + Math.random() * 4) + 's';
-        particle.style.width = (5 + Math.random() * 10) + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.opacity = 0.2 + Math.random() * 0.4;
+        particle.style.animationDuration = (6 + Math.random() * 6) + 's';
+        particle.style.fontSize = (10 + Math.random() * 15) + 'px';
         homescreen.appendChild(particle);
+    }
+}
+
+// Update time display (24-hour hacker format)
+function updateTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    
+    const timeElement = document.querySelector('.hacker-time .time-display');
+    if (timeElement) {
+        timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    
+    // Update date
+    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const dateElement = document.querySelector('.hacker-time .date-display');
+    if (dateElement) {
+        dateElement.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
+    }
+}
+
+// Update uptime counter
+let uptimeSeconds = 0;
+function updateUptime() {
+    uptimeSeconds++;
+    const hours = Math.floor(uptimeSeconds / 3600).toString().padStart(2, '0');
+    const minutes = Math.floor((uptimeSeconds % 3600) / 60).toString().padStart(2, '0');
+    const seconds = (uptimeSeconds % 60).toString().padStart(2, '0');
+    
+    const uptimeElement = document.getElementById('uptime-counter');
+    if (uptimeElement) {
+        uptimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+}
+
+// Simulate packet counter
+let packetCount = 0;
+function updatePackets() {
+    packetCount += Math.floor(Math.random() * 5);
+    const packetElement = document.getElementById('packet-count');
+    if (packetElement) {
+        packetElement.textContent = packetCount;
+    }
+}
+
+// Simulate resource usage
+function updateResources() {
+    const cpu = 15 + Math.floor(Math.random() * 25);
+    const mem = 40 + Math.floor(Math.random() * 20);
+    const net = 5 + Math.floor(Math.random() * 20);
+    
+    document.getElementById('cpu-val').textContent = cpu + '%';
+    document.getElementById('mem-val').textContent = mem + '%';
+    document.getElementById('net-val').textContent = net + '%';
+    
+    document.querySelector('.cpu-bar').style.width = cpu + '%';
+    document.querySelector('.mem-bar').style.width = mem + '%';
+    document.querySelector('.net-bar').style.width = net + '%';
+}
+
+// Add exploit log messages
+const exploitMessages = [
+    '[♥] Scanning for vulnerabilities...',
+    '[+] Port 22 open - SSH detected',
+    '[+] Port 80 open - HTTP server',
+    '[!] Found potential exploit',
+    '[♥] Running nmap -sV target',
+    '[+] Gathering system info...',
+    '[!] Weak password detected',
+    '[♥] Launching payload...',
+    '[+] Access granted! ♥',
+    '[!] Extracting data...',
+];
+
+function addExploitLog() {
+    const logContent = document.getElementById('exploit-log');
+    if (!logContent) return;
+    
+    const message = exploitMessages[Math.floor(Math.random() * exploitMessages.length)];
+    const logLine = document.createElement('div');
+    logLine.className = 'log-line';
+    logLine.textContent = message;
+    
+    // Color based on prefix
+    if (message.includes('[♥]')) logLine.style.color = '#ff69b4';
+    else if (message.includes('[+]')) logLine.style.color = '#90ee90';
+    else if (message.includes('[!]')) logLine.style.color = '#ffd700';
+    
+    logContent.appendChild(logLine);
+    logContent.scrollTop = logContent.scrollHeight;
+    
+    // Keep only last 6 lines
+    while (logContent.children.length > 6) {
+        logContent.removeChild(logContent.firstChild);
     }
 }
 
 // Initialize homescreen
 function initHomescreen() {
-    updateTime();
+    initMatrixRain();
     createParticles();
+    updateTime();
     
     // Update time every second
     setInterval(updateTime, 1000);
+    setInterval(updateUptime, 1000);
+    setInterval(updatePackets, 2000);
+    setInterval(updateResources, 3000);
+    setInterval(addExploitLog, 4000);
 }
 
 // Transition to desktop
@@ -96,8 +197,7 @@ function setupUnlock() {
     
     // Click anywhere to unlock
     homescreen.addEventListener('click', (e) => {
-        // Don't unlock if clicking on a widget (widgets have their own actions)
-        if (!e.target.closest('.widget')) {
+        if (!e.target.closest('.terminal-panel')) {
             unlockToDesktop();
         }
     });
@@ -112,16 +212,15 @@ function setupUnlock() {
     });
 }
 
-// Widget click handlers
+// Panel click handlers
 function setupWidgets() {
-    const widgets = document.querySelectorAll('.widget');
-    widgets.forEach(widget => {
-        widget.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent unlock when clicking widget
+    const panels = document.querySelectorAll('.terminal-panel');
+    panels.forEach(panel => {
+        panel.addEventListener('click', (e) => {
+            e.stopPropagation();
             
-            const action = widget.dataset.action;
+            const action = panel.dataset.action;
             if (action) {
-                // Unlock and then open the corresponding window
                 unlockToDesktop();
                 setTimeout(() => {
                     if (typeof openWindow === 'function') {

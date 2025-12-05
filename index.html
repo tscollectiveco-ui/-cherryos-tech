@@ -18,60 +18,115 @@
 
     <!-- Homescreen (appears after boot) -->
     <div id="homescreen">
-        <!-- Glassmorphism decorative circles -->
-        <div class="glass-circle glass-circle-1"></div>
-        <div class="glass-circle glass-circle-2"></div>
-        <div class="glass-circle glass-circle-3"></div>
+        <!-- Matrix rain canvas -->
+        <canvas id="matrix-rain"></canvas>
 
-        <!-- Status bar -->
-        <div class="status-bar">
+        <!-- Scan lines overlay -->
+        <div class="scanlines"></div>
+
+        <!-- Top status bar -->
+        <div class="hacker-status-bar">
             <div class="status-left">
-                <span>🍒 CherryOS</span>
+                <span class="terminal-prompt">cherry@pentest:~$</span>
+                <span class="blink-cursor">_</span>
             </div>
             <div class="status-right">
-                <span class="battery-icon">🔋 100%</span>
-                <span>📶</span>
+                <span class="net-status">♥ ETH0: UP</span>
+                <span class="vpn-status">🔒 VPN: SECURE</span>
+                <span class="uptime">⏱ <span id="uptime-counter">00:00:00</span></span>
             </div>
         </div>
 
-        <!-- Cherry logo -->
-        <div class="cherry-logo">🍒</div>
-
         <!-- Main content -->
         <div class="homescreen-content">
-            <div class="greeting">Good morning 🌸</div>
-            <div class="time-display">12:00</div>
-            <div class="date-display">Loading...</div>
+            <!-- ASCII Art Logo -->
+            <pre class="ascii-logo">
+ ♥ ═══════════════════════════════════════════ ♥
+   ██████╗██╗  ██╗███████╗██████╗ ██████╗ ██╗   ██╗
+  ██╔════╝██║  ██║██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝
+  ██║     ███████║█████╗  ██████╔╝██████╔╝ ╚████╔╝ 
+  ██║     ██╔══██║██╔══╝  ██╔══██╗██╔══██╗  ╚██╔╝  
+  ╚██████╗██║  ██║███████╗██║  ██║██║  ██║   ██║   
+   ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
+ ♥ ═══════════════════════════════════════════ ♥
+            </pre>
+            <div class="system-tagline">✧ PRETTY BUT DANGEROUS ✧ PENTEST EDITION ✧</div>
 
-            <!-- Quick widgets -->
-            <div class="widgets-container">
-                <div class="widget" data-action="chat">
-                    <div class="widget-icon">💬</div>
-                    <div class="widget-label">Messages</div>
-                    <div class="notification-badge">3</div>
-                </div>
-                <div class="widget widget-weather">
-                    <div class="widget-icon">☀️</div>
-                    <div class="weather-temp">72°F</div>
-                </div>
-                <div class="widget" data-action="notes">
-                    <div class="widget-icon">📝</div>
-                    <div class="widget-label">Notes</div>
-                </div>
-                <div class="widget music-widget">
-                    <div class="widget-icon">🎵</div>
-                    <div class="music-info">
-                        <div class="music-title">Now Playing</div>
-                        <div class="music-artist">Cherry Beats</div>
+            <!-- Terminal panels grid -->
+            <div class="terminal-grid">
+                <!-- Network Monitor -->
+                <div class="terminal-panel" data-action="chat">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> NETWORK SCAN
+                    </div>
+                    <div class="panel-content">
+                        <div class="net-line">├─ 192.168.1.1 <span class="ping-ok">[OWNED ♥]</span></div>
+                        <div class="net-line">├─ 10.0.0.45 <span class="ping-warn">[SCANNING...]</span></div>
+                        <div class="net-line">└─ <span id="packet-count">0</span> packets sniffed</div>
                     </div>
                 </div>
+
+                <!-- System Stats -->
+                <div class="terminal-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> SYSTEM STATS
+                    </div>
+                    <div class="panel-content">
+                        <div class="resource-bar">
+                            <span>CPU</span>
+                            <div class="bar-container"><div class="bar-fill cpu-bar"></div></div>
+                            <span id="cpu-val">23%</span>
+                        </div>
+                        <div class="resource-bar">
+                            <span>MEM</span>
+                            <div class="bar-container"><div class="bar-fill mem-bar"></div></div>
+                            <span id="mem-val">47%</span>
+                        </div>
+                        <div class="resource-bar">
+                            <span>NET</span>
+                            <div class="bar-container"><div class="bar-fill net-bar"></div></div>
+                            <span id="net-val">12%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Services -->
+                <div class="terminal-panel" data-action="notes">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> SERVICES
+                    </div>
+                    <div class="panel-content services-list">
+                        <div class="service"><span class="service-status on">♥</span> SSH :22</div>
+                        <div class="service"><span class="service-status on">♥</span> HTTP :80</div>
+                        <div class="service"><span class="service-status on">♥</span> HTTPS :443</div>
+                        <div class="service"><span class="service-status warn">◇</span> FTP :21</div>
+                    </div>
+                </div>
+
+                <!-- Exploit Log -->
+                <div class="terminal-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> EXPLOIT LOG
+                    </div>
+                    <div class="panel-content log-content" id="exploit-log">
+                        <div class="log-line">[♥] Loading cute payloads...</div>
+                        <div class="log-line">[+] Metasploit ready~</div>
+                        <div class="log-line">[+] Nmap scanning...</div>
+                        <div class="log-line">[!] Ready to hack ♥</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time display -->
+            <div class="hacker-time">
+                <span class="time-display">00:00:00</span>
+                <span class="date-display">Loading...</span>
             </div>
         </div>
 
         <!-- Unlock hint -->
         <div class="unlock-hint">
-            <div class="unlock-arrow">↑</div>
-            <div class="unlock-text">TAP TO UNLOCK</div>
+            <div class="unlock-text">✧ PRESS [ENTER] OR CLICK TO HACK ♥ _</div>
         </div>
     </div>
 
