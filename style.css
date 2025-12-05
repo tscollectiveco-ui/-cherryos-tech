@@ -1,7 +1,17 @@
 /* Soft pink gradient background */
+
+:root {
+    /* Color palette - Soft pink theme */
+    --cherry-pink-bright: #ff4f9a;
+    --cherry-pink-main: #ff69b4;
+    --cherry-pink-glow: #ff0099;
+    --cherry-bg-light: #ffd6ec;
+    --cherry-bg-mid: #ffb3d9;
+}
+
 body {
     margin: 0;
-    background: linear-gradient(135deg, #ffd6ec, #ffb3d9);
+    background: linear-gradient(135deg, var(--cherry-bg-light), var(--cherry-bg-mid));
     font-family: "Verdana", sans-serif;
     overflow: hidden;
 }
@@ -11,7 +21,7 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: #ffd6ec;
+    background: var(--cherry-bg-light);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,8 +33,8 @@ body {
 .boot-logo {
     font-size: 3rem;
     margin-bottom: 20px;
-    color: #ff4f9a;
-    text-shadow: 0 0 10px #ff4f9a;
+    color: var(--cherry-pink-bright);
+    text-shadow: 0 0 10px var(--cherry-pink-bright);
 }
 
 .boot-bar {
@@ -33,13 +43,13 @@ body {
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 0 10px #ff69b4;
+    box-shadow: 0 0 10px var(--cherry-pink-main);
 }
 
 .boot-fill {
     width: 0%;
     height: 100%;
-    background: #ff4f9a;
+    background: var(--cherry-pink-bright);
     animation: loading 2.8s forwards;
 }
 
@@ -59,7 +69,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    background: linear-gradient(135deg, #ffd6ec, #ffb3d9);
+    background: linear-gradient(135deg, var(--cherry-bg-light), var(--cherry-bg-mid));
 }
 
 #neon-glow {

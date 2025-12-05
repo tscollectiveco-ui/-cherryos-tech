@@ -1,5 +1,10 @@
 // Homescreen functionality - Feminine Hacker Edition
 
+// Helper function to format time values with leading zeros
+function formatTimeValue(value) {
+    return value.toString().padStart(2, '0');
+}
+
 // Matrix rain effect with pink hearts and characters
 function initMatrixRain() {
     const canvas = document.getElementById('matrix-rain');
@@ -68,9 +73,9 @@ function createParticles() {
 // Update time display (24-hour hacker format)
 function updateTime() {
     const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const hours = formatTimeValue(now.getHours());
+    const minutes = formatTimeValue(now.getMinutes());
+    const seconds = formatTimeValue(now.getSeconds());
     
     const timeElement = document.querySelector('.hacker-time .time-display');
     if (timeElement) {
@@ -89,9 +94,9 @@ function updateTime() {
 let uptimeSeconds = 0;
 function updateUptime() {
     uptimeSeconds++;
-    const hours = Math.floor(uptimeSeconds / 3600).toString().padStart(2, '0');
-    const minutes = Math.floor((uptimeSeconds % 3600) / 60).toString().padStart(2, '0');
-    const seconds = (uptimeSeconds % 60).toString().padStart(2, '0');
+    const hours = formatTimeValue(Math.floor(uptimeSeconds / 3600));
+    const minutes = formatTimeValue(Math.floor((uptimeSeconds % 3600) / 60));
+    const seconds = formatTimeValue(uptimeSeconds % 60);
     
     const uptimeElement = document.getElementById('uptime-counter');
     if (uptimeElement) {
