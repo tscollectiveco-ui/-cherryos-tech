@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CherryOS Desktop</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="homescreen.css" />
 </head>
 
 <body>
@@ -13,6 +14,65 @@
     <div id="boot-screen">
         <div class="boot-logo">🍒 CherryOS</div>
         <div class="boot-bar"><div class="boot-fill"></div></div>
+    </div>
+
+    <!-- Homescreen (appears after boot) -->
+    <div id="homescreen">
+        <!-- Glassmorphism decorative circles -->
+        <div class="glass-circle glass-circle-1"></div>
+        <div class="glass-circle glass-circle-2"></div>
+        <div class="glass-circle glass-circle-3"></div>
+
+        <!-- Status bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span>🍒 CherryOS</span>
+            </div>
+            <div class="status-right">
+                <span class="battery-icon">🔋 100%</span>
+                <span>📶</span>
+            </div>
+        </div>
+
+        <!-- Cherry logo -->
+        <div class="cherry-logo">🍒</div>
+
+        <!-- Main content -->
+        <div class="homescreen-content">
+            <div class="greeting">Good morning 🌸</div>
+            <div class="time-display">12:00</div>
+            <div class="date-display">Loading...</div>
+
+            <!-- Quick widgets -->
+            <div class="widgets-container">
+                <div class="widget" data-action="chat">
+                    <div class="widget-icon">💬</div>
+                    <div class="widget-label">Messages</div>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="widget widget-weather">
+                    <div class="widget-icon">☀️</div>
+                    <div class="weather-temp">72°F</div>
+                </div>
+                <div class="widget" data-action="notes">
+                    <div class="widget-icon">📝</div>
+                    <div class="widget-label">Notes</div>
+                </div>
+                <div class="widget music-widget">
+                    <div class="widget-icon">🎵</div>
+                    <div class="music-info">
+                        <div class="music-title">Now Playing</div>
+                        <div class="music-artist">Cherry Beats</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unlock hint -->
+        <div class="unlock-hint">
+            <div class="unlock-arrow">↑</div>
+            <div class="unlock-text">TAP TO UNLOCK</div>
+        </div>
     </div>
 
     <!-- Desktop -->
@@ -66,6 +126,7 @@
 
     </div>
 
+<script src="homescreen.js"></script>
 <script src="os.js"></script>
 </body>
 </html>

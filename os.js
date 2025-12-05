@@ -1,6 +1,9 @@
-// Boot → Show desktop
+// Boot → Show homescreen (instead of going directly to desktop)
 setTimeout(() => {
-    document.getElementById("desktop").classList.remove("hidden");
+    // Show homescreen after boot animation completes
+    if (typeof showHomescreen === 'function') {
+        showHomescreen();
+    }
 }, 3000);
 
 // Window controls
