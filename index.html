@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CherryOS Desktop</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="homescreen.css" />
 </head>
 
 <body>
@@ -13,6 +14,120 @@
     <div id="boot-screen">
         <div class="boot-logo">🍒 CherryOS</div>
         <div class="boot-bar"><div class="boot-fill"></div></div>
+    </div>
+
+    <!-- Homescreen (appears after boot) -->
+    <div id="homescreen">
+        <!-- Matrix rain canvas -->
+        <canvas id="matrix-rain"></canvas>
+
+        <!-- Scan lines overlay -->
+        <div class="scanlines"></div>
+
+        <!-- Top status bar -->
+        <div class="hacker-status-bar">
+            <div class="status-left">
+                <span class="terminal-prompt">cherry@pentest:~$</span>
+                <span class="blink-cursor">_</span>
+            </div>
+            <div class="status-right">
+                <span class="net-status">♥ ETH0: UP</span>
+                <span class="vpn-status">🔒 VPN: SECURE</span>
+                <span class="uptime">⏱ <span id="uptime-counter">00:00:00</span></span>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="homescreen-content">
+            <!-- ASCII Art Logo -->
+            <pre class="ascii-logo">
+ ♥ ═══════════════════════════════════════════ ♥
+   ██████╗██╗  ██╗███████╗██████╗ ██████╗ ██╗   ██╗
+  ██╔════╝██║  ██║██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝
+  ██║     ███████║█████╗  ██████╔╝██████╔╝ ╚████╔╝ 
+  ██║     ██╔══██║██╔══╝  ██╔══██╗██╔══██╗  ╚██╔╝  
+  ╚██████╗██║  ██║███████╗██║  ██║██║  ██║   ██║   
+   ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
+ ♥ ═══════════════════════════════════════════ ♥
+            </pre>
+            <div class="system-tagline">✧ PRETTY BUT DANGEROUS ✧ PENTEST EDITION ✧</div>
+
+            <!-- Terminal panels grid -->
+            <div class="terminal-grid">
+                <!-- Network Monitor -->
+                <div class="terminal-panel" data-action="chat">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> NETWORK SCAN
+                    </div>
+                    <div class="panel-content">
+                        <div class="net-line">├─ 192.168.1.1 <span class="ping-ok">[OWNED ♥]</span></div>
+                        <div class="net-line">├─ 10.0.0.45 <span class="ping-warn">[SCANNING...]</span></div>
+                        <div class="net-line">└─ <span id="packet-count">0</span> packets sniffed</div>
+                    </div>
+                </div>
+
+                <!-- System Stats -->
+                <div class="terminal-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> SYSTEM STATS
+                    </div>
+                    <div class="panel-content">
+                        <div class="resource-bar">
+                            <span>CPU</span>
+                            <div class="bar-container"><div class="bar-fill cpu-bar"></div></div>
+                            <span id="cpu-val">23%</span>
+                        </div>
+                        <div class="resource-bar">
+                            <span>MEM</span>
+                            <div class="bar-container"><div class="bar-fill mem-bar"></div></div>
+                            <span id="mem-val">47%</span>
+                        </div>
+                        <div class="resource-bar">
+                            <span>NET</span>
+                            <div class="bar-container"><div class="bar-fill net-bar"></div></div>
+                            <span id="net-val">12%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Services -->
+                <div class="terminal-panel" data-action="notes">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> SERVICES
+                    </div>
+                    <div class="panel-content services-list">
+                        <div class="service"><span class="service-status on">♥</span> SSH :22</div>
+                        <div class="service"><span class="service-status on">♥</span> HTTP :80</div>
+                        <div class="service"><span class="service-status on">♥</span> HTTPS :443</div>
+                        <div class="service"><span class="service-status warn">◇</span> FTP :21</div>
+                    </div>
+                </div>
+
+                <!-- Exploit Log -->
+                <div class="terminal-panel">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> EXPLOIT LOG
+                    </div>
+                    <div class="panel-content log-content" id="exploit-log">
+                        <div class="log-line">[♥] Loading cute payloads...</div>
+                        <div class="log-line">[+] Metasploit ready~</div>
+                        <div class="log-line">[+] Nmap scanning...</div>
+                        <div class="log-line">[!] Ready to hack ♥</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time display -->
+            <div class="hacker-time">
+                <span class="time-display">00:00:00</span>
+                <span class="date-display">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Unlock hint -->
+        <div class="unlock-hint">
+            <div class="unlock-text">✧ PRESS [ENTER] OR CLICK TO HACK ♥ _</div>
+        </div>
     </div>
 
     <!-- Desktop -->
@@ -66,6 +181,7 @@
 
     </div>
 
+<script src="homescreen.js"></script>
 <script src="os.js"></script>
 </body>
 </html>
