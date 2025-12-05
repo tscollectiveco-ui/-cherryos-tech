@@ -375,3 +375,146 @@ function setupTerminal() {
 // Export for use in os.js
 window.showHomescreen = showHomescreen;
 window.unlockToDesktop = unlockToDesktop;
+
+// AI Helper functionality
+const aiResponses = {
+    'whoami': '✓ Identity confirmed: cherry. You\'re the admin~ ♥',
+    'help': '📋 Showing available commands. Try "hack" for fun!',
+    'pwd': '📁 Current directory: /home/cherry/pentest',
+    'ls': '📂 Listing files... I see some juicy exploits!',
+    'date': '🕐 System time synchronized.',
+    'clear': '🧹 Terminal cleared. Fresh start!',
+    'hack': '⚡ Initiating hack sequence... I\'ll monitor the process!',
+    'scan': '🔍 Network scan started. Detecting vulnerable hosts...',
+    'default': '❓ Unknown command. Type "help" for available options~'
+};
+
+const aiTips = [
+    '💡 Tip: Use "scan" to find vulnerable hosts!',
+    '💡 Tip: Try "hack" to start an exploit sequence~',
+    '💡 Tip: Check "ls" to see available exploits!',
+    '💡 Tip: Network panel shows owned targets ♥',
+    '💡 Tip: Click ⤢ to expand any panel!',
+];
+
+function initAIHelper() {
+    const aiContent = document.getElementById('ai-helper-content');
+    if (!aiContent) return;
+    
+    // Show random tip after a delay
+    setTimeout(() => {
+        const tip = aiTips[Math.floor(Math.random() * aiTips.length)];
+        addAIMessage(tip, 'default');
+    }, 3000);
+    
+    // Periodically show tips
+    setInterval(() => {
+        if (Math.random() > 0.7) {
+            const tip = aiTips[Math.floor(Math.random() * aiTips.length)];
+            addAIMessage(tip, 'default');
+        }
+    }, 15000);
+}
+
+function addAIMessage(message, type = 'default') {
+    const aiContent = document.getElementById('ai-helper-content');
+    if (!aiContent) return;
+    
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'ai-message';
+    if (type === 'success') msgDiv.classList.add('success');
+    if (type === 'warning') msgDiv.classList.add('warning');
+    if (type === 'thinking') msgDiv.classList.add('thinking');
+    
+    msgDiv.innerHTML = `<span class="ai-label">♥ AI:</span> ${message}`;
+    aiContent.appendChild(msgDiv);
+    aiContent.scrollTop = aiContent.scrollHeight;
+    
+    // Keep only last 5 messages
+    while (aiContent.children.length > 5) {
+        aiContent.removeChild(aiContent.firstChild);
+    }
+}
+
+function aiReviewCommand(cmd) {
+    // Show thinking state
+    addAIMessage('Analyzing command...', 'thinking');
+    
+    // Delayed response for effect
+    setTimeout(() => {
+        // Remove thinking message
+        const aiContent = document.getElementById('ai-helper-content');
+        const thinkingMsg = aiContent.querySelector('.ai-message.thinking');
+        if (thinkingMsg) thinkingMsg.remove();
+        
+        // Get response
+        const response = aiResponses[cmd] || aiResponses['default'];
+        const type = cmd === 'hack' || cmd === 'scan' ? 'success' : 
+                     aiResponses[cmd] ? 'default' : 'warning';
+        
+        addAIMessage(response, type);
+    }, 500);
+}
+
+// Override terminal to hook AI reviews
+const originalSetupTerminal = setupTerminal;
+setupTerminal = function() {
+    const termInput = document.getElementById('terminal-input');
+    const termOutput = document.getElementById('terminal-output');
+    
+    if (!termInput || !termOutput) return;
+    
+    const commands = {
+        'help': '♥ Available: help, whoami, date, clear, hack, scan, pwd, ls',
+        'whoami': 'cherry',
+        'pwd': '/home/cherry/pentest',
+        'ls': 'exploits/  payloads/  targets.txt  notes.md',
+        'date': () => new Date().toString(),
+        'clear': () => 'CLEAR',
+        'hack': '[♥] Initiating hack sequence... Access granted!',
+        'scan': '[+] Scanning network... Found 3 vulnerable hosts ♥',
+    };
+    
+    termInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const cmd = termInput.value.trim().toLowerCase();
+            if (cmd) {
+                // AI reviews the command
+                aiReviewCommand(cmd);
+                
+                // Add command line
+                const cmdLine = document.createElement('div');
+                cmdLine.className = 'terminal-line';
+                cmdLine.textContent = `cherry@pentest:~$ ${termInput.value}`;
+                termOutput.appendChild(cmdLine);
+                
+                // Process command
+                if (cmd === 'clear') {
+                    while (termOutput.firstChild) {
+                        termOutput.removeChild(termOutput.firstChild);
+                    }
+                } else {
+                    const response = commands[cmd];
+                    const outputLine = document.createElement('div');
+                    outputLine.className = 'terminal-line output';
+                    if (typeof response === 'function') {
+                        outputLine.textContent = response();
+                    } else if (response) {
+                        outputLine.textContent = response;
+                    } else {
+                        outputLine.textContent = `Command not found: ${cmd}. Type 'help' ♥`;
+                        outputLine.style.color = '#ffd700';
+                    }
+                    termOutput.appendChild(outputLine);
+                }
+                
+                termOutput.scrollTop = termOutput.scrollHeight;
+                termInput.value = '';
+            }
+        }
+    });
+    
+    // Initialize AI helper
+    initAIHelper();
+};

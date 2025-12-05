@@ -579,3 +579,125 @@
 .panel-overlay.visible {
     display: block;
 }
+
+/* AI Helper Corner Box */
+.ai-helper-corner {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 280px;
+    max-height: 200px;
+    background: rgba(26, 10, 20, 0.95);
+    border: 1px solid var(--cherry-pink);
+    border-radius: 10px;
+    z-index: 100;
+    overflow: hidden;
+    box-shadow: 
+        0 0 20px var(--glow-pink-subtle),
+        inset 0 0 30px rgba(255, 105, 180, 0.05);
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.ai-helper-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 105, 180, 0.15);
+    border-bottom: 1px solid var(--glow-pink-subtle);
+}
+
+.ai-icon {
+    font-size: 1rem;
+}
+
+.ai-title {
+    color: var(--cherry-pink);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px var(--glow-pink);
+}
+
+.ai-status {
+    margin-left: auto;
+    font-size: 0.6rem;
+}
+
+.ai-status.online {
+    color: var(--cherry-green);
+    animation: pulse 2s infinite;
+}
+
+.ai-helper-content {
+    padding: 10px 12px;
+    max-height: 140px;
+    overflow-y: auto;
+    font-size: 0.6rem;
+}
+
+.ai-message {
+    margin: 6px 0;
+    line-height: 1.4;
+    color: var(--cherry-pink-light);
+    padding: 6px 8px;
+    background: rgba(255, 105, 180, 0.08);
+    border-radius: 6px;
+    border-left: 2px solid var(--cherry-pink);
+}
+
+.ai-message.thinking {
+    border-left-color: var(--cherry-gold);
+    animation: thinking 1s infinite;
+}
+
+@keyframes thinking {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+.ai-message.success {
+    border-left-color: var(--cherry-green);
+}
+
+.ai-message.warning {
+    border-left-color: var(--cherry-gold);
+}
+
+.ai-label {
+    color: var(--cherry-pink);
+    font-weight: 500;
+}
+
+.ai-helper-content::-webkit-scrollbar {
+    width: 3px;
+}
+
+.ai-helper-content::-webkit-scrollbar-track {
+    background: rgba(255, 105, 180, 0.1);
+}
+
+.ai-helper-content::-webkit-scrollbar-thumb {
+    background: var(--cherry-pink);
+    border-radius: 2px;
+}
+
+/* Responsive AI helper */
+@media (max-width: 700px) {
+    .ai-helper-corner {
+        width: 220px;
+        bottom: 70px;
+        right: 10px;
+    }
+}
