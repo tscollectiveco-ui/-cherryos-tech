@@ -153,13 +153,13 @@
 /* ASCII Logo */
 .ascii-logo {
     color: var(--cherry-pink);
-    font-size: 0.5rem;
-    line-height: 1.2;
+    font-size: 0.45rem;
+    line-height: 1.1;
     text-shadow: 
         0 0 10px var(--glow-pink),
         0 0 20px var(--glow-pink-soft),
         0 0 30px var(--glow-pink-subtle);
-    margin-bottom: 5px;
+    margin: 0;
     animation: glow 2s ease-in-out infinite alternate;
 }
 
@@ -179,9 +179,9 @@
 
 .system-tagline {
     color: var(--cherry-pink-light);
-    font-size: 0.8rem;
-    letter-spacing: 3px;
-    margin-bottom: 30px;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
     text-shadow: 0 0 10px var(--glow-light-pink);
 }
 
@@ -189,21 +189,55 @@
 .terminal-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    max-width: 700px;
+    gap: 10px;
+    max-width: 600px;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .terminal-panel {
-    background: rgba(255, 105, 180, 0.05);
+    background: rgba(255, 105, 180, 0.08);
     border: 1px solid var(--glow-pink-subtle);
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 6px;
+    padding: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+}
+
+.terminal-panel.expandable {
+    cursor: default;
+}
+
+.terminal-panel.expanded {
+    position: fixed;
+    top: 50px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    max-width: none;
+    width: auto;
+    z-index: 1000;
+    padding: 15px;
+    background: rgba(26, 10, 20, 0.98);
+    border: 2px solid var(--cherry-pink);
+    box-shadow: 0 0 40px var(--glow-pink);
+}
+
+.terminal-panel.expanded .panel-content {
+    max-height: none;
+    height: calc(100% - 80px);
+    overflow-y: auto;
+}
+
+.terminal-panel.expanded .expand-btn {
+    transform: rotate(180deg);
+}
+
+.terminal-panel.expanded .terminal-content {
+    height: calc(100% - 40px);
+    max-height: none;
 }
 
 .terminal-panel::before {
@@ -231,14 +265,27 @@
 
 .panel-header {
     color: var(--cherry-pink);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 500;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
     border-bottom: 1px solid rgba(255, 105, 180, 0.2);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+}
+
+.expand-btn {
+    margin-left: auto;
+    cursor: pointer;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.expand-btn:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px var(--glow-pink);
 }
 
 .panel-icon {
@@ -361,25 +408,25 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .hacker-time .time-display {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 300;
     color: var(--cherry-pink);
     text-shadow: 
         0 0 20px var(--glow-pink),
         0 0 40px var(--glow-pink-soft);
-    letter-spacing: 5px;
+    letter-spacing: 4px;
 }
 
 .hacker-time .date-display {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     color: var(--cherry-pink-light);
     text-shadow: 0 0 10px var(--glow-light-pink);
-    letter-spacing: 2px;
-    margin-top: 5px;
+    letter-spacing: 1px;
+    margin-top: 3px;
 }
 
 /* Unlock hint */
@@ -452,4 +499,83 @@
         transform: translateY(-30px) rotate(15deg);
         opacity: 0.5;
     }
+}
+
+/* Terminal panel specific styles */
+.terminal-content {
+    max-height: 70px;
+    overflow-y: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.6rem;
+}
+
+.terminal-line {
+    color: var(--cherry-pink-light);
+    margin: 2px 0;
+    white-space: nowrap;
+}
+
+.terminal-line.output {
+    color: var(--cherry-green);
+    padding-left: 10px;
+}
+
+.terminal-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+.terminal-input-wrap .prompt {
+    color: var(--cherry-pink);
+    font-size: 0.55rem;
+    white-space: nowrap;
+}
+
+.terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--cherry-pink-light);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.55rem;
+    outline: none;
+    caret-color: var(--cherry-pink);
+}
+
+.terminal-input::placeholder {
+    color: rgba(255, 182, 193, 0.4);
+}
+
+.terminal-panel.expanded .terminal-input-wrap {
+    padding: 10px 0;
+}
+
+.terminal-panel.expanded .terminal-input-wrap .prompt,
+.terminal-panel.expanded .terminal-input {
+    font-size: 0.8rem;
+}
+
+.terminal-panel.expanded .terminal-line {
+    font-size: 0.8rem;
+    margin: 4px 0;
+}
+
+/* Fullscreen overlay */
+.panel-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+.panel-overlay.visible {
+    display: block;
 }

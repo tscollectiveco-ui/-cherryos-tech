@@ -245,7 +245,123 @@ function showHomescreen() {
         initHomescreen();
         setupUnlock();
         setupWidgets();
+        setupExpandablePanels();
+        setupTerminal();
     }
+}
+
+// Setup expandable panels
+function setupExpandablePanels() {
+    // Create overlay element
+    const overlay = document.createElement('div');
+    overlay.className = 'panel-overlay';
+    overlay.id = 'panel-overlay';
+    document.getElementById('homescreen').appendChild(overlay);
+    
+    // Setup expand buttons
+    const expandBtns = document.querySelectorAll('.expand-btn');
+    expandBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const panel = btn.closest('.terminal-panel');
+            togglePanelExpand(panel);
+        });
+    });
+    
+    // Click overlay to close
+    overlay.addEventListener('click', () => {
+        const expandedPanel = document.querySelector('.terminal-panel.expanded');
+        if (expandedPanel) {
+            togglePanelExpand(expandedPanel);
+        }
+    });
+    
+    // ESC to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const expandedPanel = document.querySelector('.terminal-panel.expanded');
+            if (expandedPanel) {
+                togglePanelExpand(expandedPanel);
+            }
+        }
+    });
+}
+
+function togglePanelExpand(panel) {
+    const overlay = document.getElementById('panel-overlay');
+    const isExpanded = panel.classList.contains('expanded');
+    
+    if (isExpanded) {
+        panel.classList.remove('expanded');
+        overlay.classList.remove('visible');
+    } else {
+        // Close any other expanded panels
+        document.querySelectorAll('.terminal-panel.expanded').forEach(p => {
+            p.classList.remove('expanded');
+        });
+        panel.classList.add('expanded');
+        overlay.classList.add('visible');
+        
+        // Focus terminal input if it's the terminal panel
+        const termInput = panel.querySelector('.terminal-input');
+        if (termInput) {
+            setTimeout(() => termInput.focus(), 100);
+        }
+    }
+}
+
+// Setup terminal functionality
+function setupTerminal() {
+    const termInput = document.getElementById('terminal-input');
+    const termOutput = document.getElementById('terminal-output');
+    
+    if (!termInput || !termOutput) return;
+    
+    const commands = {
+        'help': '♥ Available: help, whoami, date, clear, hack, scan, pwd, ls',
+        'whoami': 'cherry',
+        'pwd': '/home/cherry/pentest',
+        'ls': 'exploits/  payloads/  targets.txt  notes.md',
+        'date': () => new Date().toString(),
+        'clear': () => 'CLEAR',
+        'hack': '[♥] Initiating hack sequence... Access granted!',
+        'scan': '[+] Scanning network... Found 3 vulnerable hosts ♥',
+    };
+    
+    termInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const cmd = termInput.value.trim().toLowerCase();
+            if (cmd) {
+                // Add command line
+                const cmdLine = document.createElement('div');
+                cmdLine.className = 'terminal-line';
+                cmdLine.textContent = `cherry@pentest:~$ ${termInput.value}`;
+                termOutput.appendChild(cmdLine);
+                
+                // Process command
+                if (cmd === 'clear') {
+                    termOutput.innerHTML = '';
+                } else {
+                    const response = commands[cmd];
+                    const outputLine = document.createElement('div');
+                    outputLine.className = 'terminal-line output';
+                    if (typeof response === 'function') {
+                        outputLine.textContent = response();
+                    } else if (response) {
+                        outputLine.textContent = response;
+                    } else {
+                        outputLine.textContent = `Command not found: ${cmd}. Type 'help' ♥`;
+                        outputLine.style.color = '#ffd700';
+                    }
+                    termOutput.appendChild(outputLine);
+                }
+                
+                termOutput.scrollTop = termOutput.scrollHeight;
+                termInput.value = '';
+            }
+        }
+    });
 }
 
 // Export for use in os.js
