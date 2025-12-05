@@ -18,23 +18,36 @@ function closeWindow(id) {
     document.getElementById(id).classList.add("hidden");
 }
 
-// Dragging system
+// Dragging system - improved to avoid memory leaks
+const dragState = new WeakMap();
+let activeWindow = null;
+
 function makeDraggable(win) {
+    // Prevent adding duplicate listeners
+    if (dragState.has(win)) return;
+    
     const bar = win.querySelector(".titlebar");
-    let offsetX = 0, offsetY = 0, isDown = false;
+    const state = { offsetX: 0, offsetY: 0 };
+    dragState.set(win, state);
 
     bar.addEventListener("mousedown", (e) => {
-        isDown = true;
-        offsetX = e.clientX - win.offsetLeft;
-        offsetY = e.clientY - win.offsetTop;
+        activeWindow = win;
+        state.offsetX = e.clientX - win.offsetLeft;
+        state.offsetY = e.clientY - win.offsetTop;
         win.style.zIndex = Date.now();
     });
-
-    document.addEventListener("mouseup", () => isDown = false);
-
-    document.addEventListener("mousemove", (e) => {
-        if (!isDown) return;
-        win.style.left = `${e.clientX - offsetX}px`;
-        win.style.top = `${e.clientY - offsetY}px`;
-    });
 }
+
+// Single global event listeners for mouse events (instead of per-window)
+document.addEventListener("mouseup", () => {
+    activeWindow = null;
+});
+
+document.addEventListener("mousemove", (e) => {
+    if (!activeWindow) return;
+    const state = dragState.get(activeWindow);
+    if (state) {
+        activeWindow.style.left = `${e.clientX - state.offsetX}px`;
+        activeWindow.style.top = `${e.clientY - state.offsetY}px`;
+    }
+});

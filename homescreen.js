@@ -5,6 +5,17 @@ function formatTimeValue(value) {
     return value.toString().padStart(2, '0');
 }
 
+// Helper function to get random integer
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+// Cached DOM element references for performance
+const domCache = {};
+
+// Animation state management
+let matrixAnimationId = null;
+
 // Matrix rain effect with pink hearts and characters
 function initMatrixRain() {
     const canvas = document.getElementById('matrix-rain');
@@ -15,6 +26,7 @@ function initMatrixRain() {
     canvas.height = window.innerHeight;
     
     const chars = '♥01アイウエオカキクケコ10♥HACK3R♥';
+    const charsLength = chars.length;
     const fontSize = 14;
     const columns = canvas.width / fontSize;
     const drops = [];
@@ -31,7 +43,7 @@ function initMatrixRain() {
         ctx.font = fontSize + 'px monospace';
         
         for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
+            const text = chars[getRandomInt(charsLength)];
             ctx.fillText(text, i * fontSize, drops[i] * fontSize);
             
             if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
@@ -39,14 +51,26 @@ function initMatrixRain() {
             }
             drops[i]++;
         }
+        
+        // Use requestAnimationFrame for smoother, more efficient animation
+        matrixAnimationId = requestAnimationFrame(draw);
     }
     
-    setInterval(draw, 50);
+    // Start animation
+    matrixAnimationId = requestAnimationFrame(draw);
     
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     });
+}
+
+// Stop matrix rain animation (called when transitioning to desktop)
+function stopMatrixRain() {
+    if (matrixAnimationId) {
+        cancelAnimationFrame(matrixAnimationId);
+        matrixAnimationId = null;
+    }
 }
 
 // Create floating heart particles
@@ -56,11 +80,12 @@ function createParticles() {
     
     const particleCount = 12;
     const hearts = ['♥', '♡', '❤', '💗'];
+    const heartsLength = hearts.length;
     
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
-        particle.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        particle.textContent = hearts[getRandomInt(heartsLength)];
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
         particle.style.animationDelay = Math.random() * 5 + 's';
@@ -107,7 +132,7 @@ function updateUptime() {
 // Simulate packet counter
 let packetCount = 0;
 function updatePackets() {
-    packetCount += Math.floor(Math.random() * 5);
+    packetCount += getRandomInt(5);
     const packetElement = document.getElementById('packet-count');
     if (packetElement) {
         packetElement.textContent = packetCount;
@@ -116,17 +141,27 @@ function updatePackets() {
 
 // Simulate resource usage
 function updateResources() {
-    const cpu = 15 + Math.floor(Math.random() * 25);
-    const mem = 40 + Math.floor(Math.random() * 20);
-    const net = 5 + Math.floor(Math.random() * 20);
+    const cpu = 15 + getRandomInt(25);
+    const mem = 40 + getRandomInt(20);
+    const net = 5 + getRandomInt(20);
     
-    document.getElementById('cpu-val').textContent = cpu + '%';
-    document.getElementById('mem-val').textContent = mem + '%';
-    document.getElementById('net-val').textContent = net + '%';
+    // Cache DOM elements for better performance
+    if (!domCache.cpuVal) {
+        domCache.cpuVal = document.getElementById('cpu-val');
+        domCache.memVal = document.getElementById('mem-val');
+        domCache.netVal = document.getElementById('net-val');
+        domCache.cpuBar = document.querySelector('.cpu-bar');
+        domCache.memBar = document.querySelector('.mem-bar');
+        domCache.netBar = document.querySelector('.net-bar');
+    }
     
-    document.querySelector('.cpu-bar').style.width = cpu + '%';
-    document.querySelector('.mem-bar').style.width = mem + '%';
-    document.querySelector('.net-bar').style.width = net + '%';
+    if (domCache.cpuVal) domCache.cpuVal.textContent = cpu + '%';
+    if (domCache.memVal) domCache.memVal.textContent = mem + '%';
+    if (domCache.netVal) domCache.netVal.textContent = net + '%';
+    
+    if (domCache.cpuBar) domCache.cpuBar.style.width = cpu + '%';
+    if (domCache.memBar) domCache.memBar.style.width = mem + '%';
+    if (domCache.netBar) domCache.netBar.style.width = net + '%';
 }
 
 // Add exploit log messages
@@ -147,7 +182,7 @@ function addExploitLog() {
     const logContent = document.getElementById('exploit-log');
     if (!logContent) return;
     
-    const message = exploitMessages[Math.floor(Math.random() * exploitMessages.length)];
+    const message = exploitMessages[getRandomInt(exploitMessages.length)];
     const logLine = document.createElement('div');
     logLine.className = 'log-line';
     logLine.textContent = message;
@@ -187,6 +222,9 @@ function unlockToDesktop() {
     
     if (homescreen && desktop) {
         homescreen.classList.add('fade-out');
+        
+        // Stop the matrix animation when leaving homescreen
+        stopMatrixRain();
         
         setTimeout(() => {
             homescreen.style.display = 'none';
