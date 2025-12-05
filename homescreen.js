@@ -207,10 +207,22 @@ function setupUnlock() {
         }
     });
     
-    // Keyboard unlock
+    // Consolidated keyboard handler for unlock and panel controls
     document.addEventListener('keydown', (e) => {
+        // ESC to close expanded panels
+        if (e.key === 'Escape') {
+            const expandedPanel = document.querySelector('.terminal-panel.expanded');
+            if (expandedPanel) {
+                togglePanelExpand(expandedPanel);
+                return;
+            }
+        }
+        
+        // Enter/Space to unlock homescreen
         if (homescreen.classList.contains('visible') && !homescreen.classList.contains('fade-out')) {
             if (e.key === 'Enter' || e.key === ' ') {
+                // Don't unlock if typing in terminal input
+                if (e.target.classList.contains('terminal-input')) return;
                 unlockToDesktop();
             }
         }
@@ -275,17 +287,10 @@ function setupExpandablePanels() {
             togglePanelExpand(expandedPanel);
         }
     });
-    
-    // ESC to close
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const expandedPanel = document.querySelector('.terminal-panel.expanded');
-            if (expandedPanel) {
-                togglePanelExpand(expandedPanel);
-            }
-        }
-    });
 }
+
+// Delay for focus after panel expansion (ms)
+const PANEL_FOCUS_DELAY = 100;
 
 function togglePanelExpand(panel) {
     const overlay = document.getElementById('panel-overlay');
@@ -305,7 +310,7 @@ function togglePanelExpand(panel) {
         // Focus terminal input if it's the terminal panel
         const termInput = panel.querySelector('.terminal-input');
         if (termInput) {
-            setTimeout(() => termInput.focus(), 100);
+            setTimeout(() => termInput.focus(), PANEL_FOCUS_DELAY);
         }
     }
 }
@@ -341,7 +346,10 @@ function setupTerminal() {
                 
                 // Process command
                 if (cmd === 'clear') {
-                    termOutput.innerHTML = '';
+                    // Safely clear terminal output
+                    while (termOutput.firstChild) {
+                        termOutput.removeChild(termOutput.firstChild);
+                    }
                 } else {
                     const response = commands[cmd];
                     const outputLine = document.createElement('div');
