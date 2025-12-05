@@ -20,17 +20,18 @@ function closeWindow(id) {
 
 // Dragging system - improved to avoid memory leaks
 const dragState = new WeakMap();
+let activeWindow = null;
 
 function makeDraggable(win) {
     // Prevent adding duplicate listeners
     if (dragState.has(win)) return;
     
     const bar = win.querySelector(".titlebar");
-    const state = { offsetX: 0, offsetY: 0, isDown: false };
+    const state = { offsetX: 0, offsetY: 0 };
     dragState.set(win, state);
 
     bar.addEventListener("mousedown", (e) => {
-        state.isDown = true;
+        activeWindow = win;
         state.offsetX = e.clientX - win.offsetLeft;
         state.offsetY = e.clientY - win.offsetTop;
         win.style.zIndex = Date.now();
@@ -39,18 +40,14 @@ function makeDraggable(win) {
 
 // Single global event listeners for mouse events (instead of per-window)
 document.addEventListener("mouseup", () => {
-    document.querySelectorAll('.window').forEach(win => {
-        const state = dragState.get(win);
-        if (state) state.isDown = false;
-    });
+    activeWindow = null;
 });
 
 document.addEventListener("mousemove", (e) => {
-    document.querySelectorAll('.window').forEach(win => {
-        const state = dragState.get(win);
-        if (state && state.isDown) {
-            win.style.left = `${e.clientX - state.offsetX}px`;
-            win.style.top = `${e.clientY - state.offsetY}px`;
-        }
-    });
+    if (!activeWindow) return;
+    const state = dragState.get(activeWindow);
+    if (state) {
+        activeWindow.style.left = `${e.clientX - state.offsetX}px`;
+        activeWindow.style.top = `${e.clientY - state.offsetY}px`;
+    }
 });

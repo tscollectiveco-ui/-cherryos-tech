@@ -13,6 +13,9 @@ function getRandomInt(max) {
 // Cached DOM element references for performance
 const domCache = {};
 
+// Animation state management
+let matrixAnimationId = null;
+
 // Matrix rain effect with pink hearts and characters
 function initMatrixRain() {
     const canvas = document.getElementById('matrix-rain');
@@ -32,8 +35,6 @@ function initMatrixRain() {
         drops[i] = Math.random() * -100;
     }
     
-    let animationId = null;
-    
     function draw() {
         ctx.fillStyle = 'rgba(26, 10, 20, 0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -51,19 +52,25 @@ function initMatrixRain() {
             drops[i]++;
         }
         
-        animationId = requestAnimationFrame(draw);
+        // Use requestAnimationFrame for smoother, more efficient animation
+        matrixAnimationId = requestAnimationFrame(draw);
     }
     
-    // Use requestAnimationFrame for smoother, more efficient animation
-    animationId = requestAnimationFrame(draw);
+    // Start animation
+    matrixAnimationId = requestAnimationFrame(draw);
     
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     });
-    
-    // Store animation ID for potential cleanup
-    return animationId;
+}
+
+// Stop matrix rain animation (called when transitioning to desktop)
+function stopMatrixRain() {
+    if (matrixAnimationId) {
+        cancelAnimationFrame(matrixAnimationId);
+        matrixAnimationId = null;
+    }
 }
 
 // Create floating heart particles
@@ -215,6 +222,9 @@ function unlockToDesktop() {
     
     if (homescreen && desktop) {
         homescreen.classList.add('fade-out');
+        
+        // Stop the matrix animation when leaving homescreen
+        stopMatrixRain();
         
         setTimeout(() => {
             homescreen.style.display = 'none';
