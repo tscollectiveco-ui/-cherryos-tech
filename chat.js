@@ -1,6 +1,8 @@
 const input = document.getElementById("userInput");
 const chat = document.getElementById("chat");
 const sendBtn = document.getElementById("sendBtn");
+const WORKER_URL = "https://cherryos-chat-worker.tscollective-co.workers.dev";
+
 
 function addMessage(text, isUser) {
   const div = document.createElement("div");
