@@ -114,11 +114,27 @@ function updatePackets() {
     }
 }
 
-// Simulate resource usage
-function updateResources() {
-    const cpu = 15 + Math.floor(Math.random() * 25);
-    const mem = 40 + Math.floor(Math.random() * 20);
-    const net = 5 + Math.floor(Math.random() * 20);
+// Update resource usage from backend API with fallback
+async function updateResources() {
+    let cpu, mem, net;
+    
+    try {
+        // Try to fetch from backend API
+        const response = await fetch('/api/status');
+        if (response.ok) {
+            const data = await response.json();
+            cpu = data.cpu;
+            mem = data.memory;
+            net = data.network;
+        } else {
+            throw new Error('API response not ok');
+        }
+    } catch {
+        // Fallback to random data if fetch fails (e.g., running locally)
+        cpu = 15 + Math.floor(Math.random() * 25);
+        mem = 40 + Math.floor(Math.random() * 20);
+        net = 5 + Math.floor(Math.random() * 20);
+    }
     
     document.getElementById('cpu-val').textContent = cpu + '%';
     document.getElementById('mem-val').textContent = mem + '%';
