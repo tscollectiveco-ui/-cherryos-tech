@@ -1,11 +1,30 @@
 /* Homescreen Styles - Feminine Hacker Aesthetic */
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap');
 
+:root {
+    /* Color palette - Hot pink theme */
+    --cherry-pink: #ff69b4;
+    --cherry-pink-light: #ffb6c1;
+    --cherry-pink-dark: #ff1493;
+    --cherry-plum: #dda0dd;
+    --cherry-orchid: #da70d6;
+    --cherry-bg: #1a0a14;
+    --cherry-bg-mid: #2d1225;
+    --cherry-green: #90ee90;
+    --cherry-gold: #ffd700;
+    
+    /* Shadows */
+    --glow-pink: rgba(255, 105, 180, 0.8);
+    --glow-pink-soft: rgba(255, 105, 180, 0.5);
+    --glow-pink-subtle: rgba(255, 105, 180, 0.3);
+    --glow-light-pink: rgba(255, 182, 193, 0.5);
+}
+
 #homescreen {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #1a0a14 0%, #2d1225 50%, #1a0a14 100%);
+    background: linear-gradient(135deg, var(--cherry-bg) 0%, var(--cherry-bg-mid) 50%, var(--cherry-bg) 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -68,7 +87,7 @@
     justify-content: space-between;
     align-items: center;
     background: rgba(255, 105, 180, 0.1);
-    border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+    border-bottom: 1px solid var(--glow-pink-subtle);
     z-index: 10;
 }
 
@@ -79,13 +98,13 @@
 }
 
 .terminal-prompt {
-    color: #ff69b4;
+    color: var(--cherry-pink);
     font-size: 0.85rem;
-    text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+    text-shadow: 0 0 10px var(--glow-pink);
 }
 
 .blink-cursor {
-    color: #ff69b4;
+    color: var(--cherry-pink);
     animation: blink 1s infinite;
 }
 
@@ -95,13 +114,13 @@
 }
 
 .net-status, .vpn-status, .uptime {
-    color: #ffb6c1;
+    color: var(--cherry-pink-light);
     font-size: 0.75rem;
-    text-shadow: 0 0 5px rgba(255, 182, 193, 0.5);
+    text-shadow: 0 0 5px var(--glow-light-pink);
 }
 
 .net-status {
-    color: #90ee90;
+    color: var(--cherry-green);
 }
 
 /* Main content container */
@@ -133,13 +152,13 @@
 
 /* ASCII Logo */
 .ascii-logo {
-    color: #ff69b4;
+    color: var(--cherry-pink);
     font-size: 0.5rem;
     line-height: 1.2;
     text-shadow: 
-        0 0 10px rgba(255, 105, 180, 0.8),
-        0 0 20px rgba(255, 105, 180, 0.5),
-        0 0 30px rgba(255, 105, 180, 0.3);
+        0 0 10px var(--glow-pink),
+        0 0 20px var(--glow-pink-soft),
+        0 0 30px var(--glow-pink-subtle);
     margin-bottom: 5px;
     animation: glow 2s ease-in-out infinite alternate;
 }
@@ -147,23 +166,23 @@
 @keyframes glow {
     from {
         text-shadow: 
-            0 0 10px rgba(255, 105, 180, 0.8),
-            0 0 20px rgba(255, 105, 180, 0.5);
+            0 0 10px var(--glow-pink),
+            0 0 20px var(--glow-pink-soft);
     }
     to {
         text-shadow: 
-            0 0 15px rgba(255, 105, 180, 1),
-            0 0 30px rgba(255, 105, 180, 0.8),
-            0 0 40px rgba(255, 105, 180, 0.5);
+            0 0 15px var(--cherry-pink),
+            0 0 30px var(--glow-pink),
+            0 0 40px var(--glow-pink-soft);
     }
 }
 
 .system-tagline {
-    color: #ffb6c1;
+    color: var(--cherry-pink-light);
     font-size: 0.8rem;
     letter-spacing: 3px;
     margin-bottom: 30px;
-    text-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+    text-shadow: 0 0 10px var(--glow-light-pink);
 }
 
 /* Terminal panels grid */
@@ -178,7 +197,7 @@
 
 .terminal-panel {
     background: rgba(255, 105, 180, 0.05);
-    border: 1px solid rgba(255, 105, 180, 0.3);
+    border: 1px solid var(--glow-pink-subtle);
     border-radius: 8px;
     padding: 12px;
     cursor: pointer;
@@ -203,15 +222,15 @@
 }
 
 .terminal-panel:hover {
-    border-color: #ff69b4;
+    border-color: var(--cherry-pink);
     box-shadow: 
-        0 0 20px rgba(255, 105, 180, 0.3),
+        0 0 20px var(--glow-pink-subtle),
         inset 0 0 20px rgba(255, 105, 180, 0.05);
     transform: translateY(-2px);
 }
 
 .panel-header {
-    color: #ff69b4;
+    color: var(--cherry-pink);
     font-size: 0.7rem;
     font-weight: 500;
     margin-bottom: 10px;
@@ -223,28 +242,28 @@
 }
 
 .panel-icon {
-    color: #ff69b4;
-    text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+    color: var(--cherry-pink);
+    text-shadow: 0 0 10px var(--glow-pink);
 }
 
 .panel-content {
     font-size: 0.65rem;
-    color: #ffb6c1;
+    color: var(--cherry-pink-light);
 }
 
 /* Network lines */
 .net-line {
     margin: 4px 0;
-    color: #dda0dd;
+    color: var(--cherry-plum);
 }
 
 .ping-ok {
-    color: #90ee90;
+    color: var(--cherry-green);
     text-shadow: 0 0 5px rgba(144, 238, 144, 0.5);
 }
 
 .ping-warn {
-    color: #ffd700;
+    color: var(--cherry-gold);
     animation: pulse 1s infinite;
 }
 
@@ -259,7 +278,7 @@
     align-items: center;
     gap: 8px;
     margin: 6px 0;
-    color: #ffb6c1;
+    color: var(--cherry-pink-light);
 }
 
 .bar-container {
@@ -279,19 +298,19 @@
 
 .cpu-bar {
     width: 23%;
-    background: linear-gradient(90deg, #ff69b4, #ff1493);
-    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    background: linear-gradient(90deg, var(--cherry-pink), var(--cherry-pink-dark));
+    box-shadow: 0 0 10px var(--glow-pink-soft);
 }
 
 .mem-bar {
     width: 47%;
-    background: linear-gradient(90deg, #da70d6, #ff69b4);
+    background: linear-gradient(90deg, var(--cherry-orchid), var(--cherry-pink));
     box-shadow: 0 0 10px rgba(218, 112, 214, 0.5);
 }
 
 .net-bar {
     width: 12%;
-    background: linear-gradient(90deg, #dda0dd, #da70d6);
+    background: linear-gradient(90deg, var(--cherry-plum), var(--cherry-orchid));
     box-shadow: 0 0 10px rgba(221, 160, 221, 0.5);
 }
 
@@ -313,12 +332,12 @@
 }
 
 .service-status.on {
-    color: #ff69b4;
-    text-shadow: 0 0 8px rgba(255, 105, 180, 0.8);
+    color: var(--cherry-pink);
+    text-shadow: 0 0 8px var(--glow-pink);
 }
 
 .service-status.warn {
-    color: #ffd700;
+    color: var(--cherry-gold);
 }
 
 /* Log content */
@@ -332,10 +351,10 @@
     font-size: 0.6rem;
 }
 
-.log-line:nth-child(1) { color: #ff69b4; }
-.log-line:nth-child(2) { color: #90ee90; }
-.log-line:nth-child(3) { color: #90ee90; }
-.log-line:nth-child(4) { color: #ffd700; }
+.log-line:nth-child(1) { color: var(--cherry-pink); }
+.log-line:nth-child(2) { color: var(--cherry-green); }
+.log-line:nth-child(3) { color: var(--cherry-green); }
+.log-line:nth-child(4) { color: var(--cherry-gold); }
 
 /* Hacker time display */
 .hacker-time {
@@ -348,17 +367,17 @@
 .hacker-time .time-display {
     font-size: 2.5rem;
     font-weight: 300;
-    color: #ff69b4;
+    color: var(--cherry-pink);
     text-shadow: 
-        0 0 20px rgba(255, 105, 180, 0.8),
-        0 0 40px rgba(255, 105, 180, 0.5);
+        0 0 20px var(--glow-pink),
+        0 0 40px var(--glow-pink-soft);
     letter-spacing: 5px;
 }
 
 .hacker-time .date-display {
     font-size: 0.9rem;
-    color: #ffb6c1;
-    text-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+    color: var(--cherry-pink-light);
+    text-shadow: 0 0 10px var(--glow-light-pink);
     letter-spacing: 2px;
     margin-top: 5px;
 }
@@ -371,10 +390,10 @@
 }
 
 .unlock-text {
-    color: #ff69b4;
+    color: var(--cherry-pink);
     font-size: 0.85rem;
     letter-spacing: 2px;
-    text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+    text-shadow: 0 0 10px var(--glow-pink);
     animation: blink 1.5s infinite;
 }
 
@@ -417,7 +436,7 @@
 /* Heart particles */
 .particle {
     position: absolute;
-    color: #ff69b4;
+    color: var(--cherry-pink);
     font-size: 12px;
     pointer-events: none;
     animation: floatHeart 8s ease-in-out infinite;
