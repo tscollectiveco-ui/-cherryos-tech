@@ -1,0 +1,91 @@
+:root {
+  --pink-bg: #ffddee;
+  --pink-panel: #ffcad9;
+  --pink-soft: #ffe9f1;
+  --pink-text: #d74f8a;
+  --pink-white: #fff7fa;
+  --shadow: rgba(255, 170, 200, 0.3);
+  --font: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: var(--pink-bg);
+  font-family: var(--font);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.window {
+  width: 90%;
+  max-width: 420px;
+  background: var(--pink-soft);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 25px var(--shadow);
+  border: 1px solid var(--pink-panel);
+}
+
+.window-header {
+  text-align: center;
+  padding: 10px;
+  background: var(--pink-panel);
+  border-radius: 8px;
+  color: var(--pink-text);
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.chat-box {
+  height: 380px;
+  overflow-y: auto;
+  background: var(--pink-white);
+  border-radius: 10px;
+  padding: 15px;
+  border: 1px solid var(--pink-panel);
+}
+
+.message {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  max-width: 80%;
+  line-height: 1.4;
+}
+
+.user {
+  background: var(--pink-panel);
+  color: var(--pink-text);
+  margin-left: auto;
+}
+
+.bot {
+  background: var(--pink-white);
+  color: #555;
+}
+
+.input-area {
+  display: flex;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--pink-panel);
+  background: var(--pink-white);
+}
+
+button {
+  padding: 10px 16px;
+  background: var(--pink-panel);
+  color: var(--pink-text);
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
