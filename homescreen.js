@@ -1,8 +1,69 @@
 // Homescreen functionality - Feminine Hacker Edition
 
+// Store interval IDs for cleanup
+let matrixRainIntervalId = null;
+let timeIntervalId = null;
+let uptimeIntervalId = null;
+let packetsIntervalId = null;
+let resourcesIntervalId = null;
+let exploitLogIntervalId = null;
+let resizeHandler = null;
+
+// Cache DOM elements
+let cachedElements = {};
+
+function getCachedElement(selector) {
+    if (!cachedElements[selector]) {
+        cachedElements[selector] = document.querySelector(selector);
+    }
+    return cachedElements[selector];
+}
+
+function getCachedElementById(id) {
+    const key = 'id:' + id;
+    if (!cachedElements[key]) {
+        cachedElements[key] = document.getElementById(id);
+    }
+    return cachedElements[key];
+}
+
+// Clear all homescreen intervals
+function clearHomescreenIntervals() {
+    if (matrixRainIntervalId) {
+        clearInterval(matrixRainIntervalId);
+        matrixRainIntervalId = null;
+    }
+    if (timeIntervalId) {
+        clearInterval(timeIntervalId);
+        timeIntervalId = null;
+    }
+    if (uptimeIntervalId) {
+        clearInterval(uptimeIntervalId);
+        uptimeIntervalId = null;
+    }
+    if (packetsIntervalId) {
+        clearInterval(packetsIntervalId);
+        packetsIntervalId = null;
+    }
+    if (resourcesIntervalId) {
+        clearInterval(resourcesIntervalId);
+        resourcesIntervalId = null;
+    }
+    if (exploitLogIntervalId) {
+        clearInterval(exploitLogIntervalId);
+        exploitLogIntervalId = null;
+    }
+    if (resizeHandler) {
+        window.removeEventListener('resize', resizeHandler);
+        resizeHandler = null;
+    }
+    // Clear cached elements when leaving homescreen since they won't be reused
+    cachedElements = {};
+}
+
 // Matrix rain effect with pink hearts and characters
 function initMatrixRain() {
-    const canvas = document.getElementById('matrix-rain');
+    const canvas = getCachedElementById('matrix-rain');
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
@@ -36,17 +97,18 @@ function initMatrixRain() {
         }
     }
     
-    setInterval(draw, 50);
+    matrixRainIntervalId = setInterval(draw, 50);
     
-    window.addEventListener('resize', () => {
+    resizeHandler = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-    });
+    };
+    window.addEventListener('resize', resizeHandler);
 }
 
 // Create floating heart particles
 function createParticles() {
-    const homescreen = document.getElementById('homescreen');
+    const homescreen = getCachedElementById('homescreen');
     if (!homescreen) return;
     
     const particleCount = 12;
@@ -72,14 +134,14 @@ function updateTime() {
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const seconds = now.getSeconds().toString().padStart(2, '0');
     
-    const timeElement = document.querySelector('.hacker-time .time-display');
+    const timeElement = getCachedElement('.hacker-time .time-display');
     if (timeElement) {
         timeElement.textContent = `${hours}:${minutes}:${seconds}`;
     }
     
     // Update date
     const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-    const dateElement = document.querySelector('.hacker-time .date-display');
+    const dateElement = getCachedElement('.hacker-time .date-display');
     if (dateElement) {
         dateElement.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
     }
@@ -93,7 +155,7 @@ function updateUptime() {
     const minutes = Math.floor((uptimeSeconds % 3600) / 60).toString().padStart(2, '0');
     const seconds = (uptimeSeconds % 60).toString().padStart(2, '0');
     
-    const uptimeElement = document.getElementById('uptime-counter');
+    const uptimeElement = getCachedElementById('uptime-counter');
     if (uptimeElement) {
         uptimeElement.textContent = `${hours}:${minutes}:${seconds}`;
     }
@@ -103,7 +165,7 @@ function updateUptime() {
 let packetCount = 0;
 function updatePackets() {
     packetCount += Math.floor(Math.random() * 5);
-    const packetElement = document.getElementById('packet-count');
+    const packetElement = getCachedElementById('packet-count');
     if (packetElement) {
         packetElement.textContent = packetCount;
     }
@@ -115,13 +177,20 @@ function updateResources() {
     const mem = 40 + Math.floor(Math.random() * 20);
     const net = 5 + Math.floor(Math.random() * 20);
     
-    document.getElementById('cpu-val').textContent = cpu + '%';
-    document.getElementById('mem-val').textContent = mem + '%';
-    document.getElementById('net-val').textContent = net + '%';
+    const cpuVal = getCachedElementById('cpu-val');
+    const memVal = getCachedElementById('mem-val');
+    const netVal = getCachedElementById('net-val');
+    const cpuBar = getCachedElement('.cpu-bar');
+    const memBar = getCachedElement('.mem-bar');
+    const netBar = getCachedElement('.net-bar');
     
-    document.querySelector('.cpu-bar').style.width = cpu + '%';
-    document.querySelector('.mem-bar').style.width = mem + '%';
-    document.querySelector('.net-bar').style.width = net + '%';
+    if (cpuVal) cpuVal.textContent = cpu + '%';
+    if (memVal) memVal.textContent = mem + '%';
+    if (netVal) netVal.textContent = net + '%';
+    
+    if (cpuBar) cpuBar.style.width = cpu + '%';
+    if (memBar) memBar.style.width = mem + '%';
+    if (netBar) netBar.style.width = net + '%';
 }
 
 // Add exploit log messages
@@ -139,7 +208,7 @@ const exploitMessages = [
 ];
 
 function addExploitLog() {
-    const logContent = document.getElementById('exploit-log');
+    const logContent = getCachedElementById('exploit-log');
     if (!logContent) return;
     
     const message = exploitMessages[Math.floor(Math.random() * exploitMessages.length)];
@@ -168,20 +237,23 @@ function initHomescreen() {
     updateTime();
     
     // Update time every second
-    setInterval(updateTime, 1000);
-    setInterval(updateUptime, 1000);
-    setInterval(updatePackets, 2000);
-    setInterval(updateResources, 3000);
-    setInterval(addExploitLog, 4000);
+    timeIntervalId = setInterval(updateTime, 1000);
+    uptimeIntervalId = setInterval(updateUptime, 1000);
+    packetsIntervalId = setInterval(updatePackets, 2000);
+    resourcesIntervalId = setInterval(updateResources, 3000);
+    exploitLogIntervalId = setInterval(addExploitLog, 4000);
 }
 
 // Transition to desktop
 function unlockToDesktop() {
-    const homescreen = document.getElementById('homescreen');
-    const desktop = document.getElementById('desktop');
+    const homescreen = getCachedElementById('homescreen');
+    const desktop = getCachedElementById('desktop');
     
     if (homescreen && desktop) {
         homescreen.classList.add('fade-out');
+        
+        // Clear all intervals when leaving homescreen
+        clearHomescreenIntervals();
         
         setTimeout(() => {
             homescreen.style.display = 'none';
@@ -192,7 +264,7 @@ function unlockToDesktop() {
 
 // Handle click/tap to unlock
 function setupUnlock() {
-    const homescreen = document.getElementById('homescreen');
+    const homescreen = getCachedElementById('homescreen');
     if (!homescreen) return;
     
     // Click anywhere to unlock
@@ -234,7 +306,7 @@ function setupWidgets() {
 
 // Show homescreen after boot
 function showHomescreen() {
-    const homescreen = document.getElementById('homescreen');
+    const homescreen = getCachedElementById('homescreen');
     if (homescreen) {
         homescreen.classList.add('visible');
         initHomescreen();
