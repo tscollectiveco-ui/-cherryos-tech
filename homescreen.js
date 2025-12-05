@@ -10,34 +10,34 @@ function initMatrixRain() {
     const canvas = document.getElementById('matrix-rain');
     if (!canvas) return;
     
-    const ctx = canvas.getContext('2d');
+    const canvasContext = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
-    const chars = '♥01アイウエオカキクケコ10♥HACK3R♥';
+    const matrixCharacters = '♥01アイウエオカキクケコ10♥HACK3R♥';
     const fontSize = 14;
     const columns = canvas.width / fontSize;
-    const drops = [];
+    const columnDropPositions = [];
     
-    for (let i = 0; i < columns; i++) {
-        drops[i] = Math.random() * -100;
+    for (let columnIndex = 0; columnIndex < columns; columnIndex++) {
+        columnDropPositions[columnIndex] = Math.random() * -100;
     }
     
     function draw() {
-        ctx.fillStyle = 'rgba(26, 10, 20, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        canvasContext.fillStyle = 'rgba(26, 10, 20, 0.05)';
+        canvasContext.fillRect(0, 0, canvas.width, canvas.height);
         
-        ctx.fillStyle = '#ff69b4';
-        ctx.font = fontSize + 'px monospace';
+        canvasContext.fillStyle = '#ff69b4';
+        canvasContext.font = fontSize + 'px monospace';
         
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        for (let columnIndex = 0; columnIndex < columnDropPositions.length; columnIndex++) {
+            const character = matrixCharacters[Math.floor(Math.random() * matrixCharacters.length)];
+            canvasContext.fillText(character, columnIndex * fontSize, columnDropPositions[columnIndex] * fontSize);
             
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
+            if (columnDropPositions[columnIndex] * fontSize > canvas.height && Math.random() > 0.975) {
+                columnDropPositions[columnIndex] = 0;
             }
-            drops[i]++;
+            columnDropPositions[columnIndex]++;
         }
     }
     
@@ -55,12 +55,12 @@ function createParticles() {
     if (!homescreen) return;
     
     const particleCount = 12;
-    const hearts = ['♥', '♡', '❤', '💗'];
+    const heartSymbols = ['♥', '♡', '❤', '💗'];
     
-    for (let i = 0; i < particleCount; i++) {
+    for (let particleIndex = 0; particleIndex < particleCount; particleIndex++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
-        particle.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        particle.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
         particle.style.animationDelay = Math.random() * 5 + 's';
@@ -72,10 +72,10 @@ function createParticles() {
 
 // Update time display (24-hour hacker format)
 function updateTime() {
-    const now = new Date();
-    const hours = formatTimeValue(now.getHours());
-    const minutes = formatTimeValue(now.getMinutes());
-    const seconds = formatTimeValue(now.getSeconds());
+    const currentDateTime = new Date();
+    const hours = formatTimeValue(currentDateTime.getHours());
+    const minutes = formatTimeValue(currentDateTime.getMinutes());
+    const seconds = formatTimeValue(currentDateTime.getSeconds());
     
     const timeElement = document.querySelector('.hacker-time .time-display');
     if (timeElement) {
@@ -83,10 +83,10 @@ function updateTime() {
     }
     
     // Update date
-    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const dateFormatOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     const dateElement = document.querySelector('.hacker-time .date-display');
     if (dateElement) {
-        dateElement.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
+        dateElement.textContent = currentDateTime.toLocaleDateString('en-US', dateFormatOptions).toUpperCase();
     }
 }
 
@@ -116,17 +116,17 @@ function updatePackets() {
 
 // Simulate resource usage
 function updateResources() {
-    const cpu = 15 + Math.floor(Math.random() * 25);
-    const mem = 40 + Math.floor(Math.random() * 20);
-    const net = 5 + Math.floor(Math.random() * 20);
+    const cpuUsagePercent = 15 + Math.floor(Math.random() * 25);
+    const memoryUsagePercent = 40 + Math.floor(Math.random() * 20);
+    const networkUsagePercent = 5 + Math.floor(Math.random() * 20);
     
-    document.getElementById('cpu-val').textContent = cpu + '%';
-    document.getElementById('mem-val').textContent = mem + '%';
-    document.getElementById('net-val').textContent = net + '%';
+    document.getElementById('cpu-val').textContent = cpuUsagePercent + '%';
+    document.getElementById('mem-val').textContent = memoryUsagePercent + '%';
+    document.getElementById('net-val').textContent = networkUsagePercent + '%';
     
-    document.querySelector('.cpu-bar').style.width = cpu + '%';
-    document.querySelector('.mem-bar').style.width = mem + '%';
-    document.querySelector('.net-bar').style.width = net + '%';
+    document.querySelector('.cpu-bar').style.width = cpuUsagePercent + '%';
+    document.querySelector('.mem-bar').style.width = memoryUsagePercent + '%';
+    document.querySelector('.net-bar').style.width = networkUsagePercent + '%';
 }
 
 // Add exploit log messages
@@ -147,15 +147,15 @@ function addExploitLog() {
     const logContent = document.getElementById('exploit-log');
     if (!logContent) return;
     
-    const message = exploitMessages[Math.floor(Math.random() * exploitMessages.length)];
+    const randomMessage = exploitMessages[Math.floor(Math.random() * exploitMessages.length)];
     const logLine = document.createElement('div');
     logLine.className = 'log-line';
-    logLine.textContent = message;
+    logLine.textContent = randomMessage;
     
     // Color based on prefix
-    if (message.includes('[♥]')) logLine.style.color = '#ff69b4';
-    else if (message.includes('[+]')) logLine.style.color = '#90ee90';
-    else if (message.includes('[!]')) logLine.style.color = '#ffd700';
+    if (randomMessage.includes('[♥]')) logLine.style.color = '#ff69b4';
+    else if (randomMessage.includes('[+]')) logLine.style.color = '#90ee90';
+    else if (randomMessage.includes('[!]')) logLine.style.color = '#ffd700';
     
     logContent.appendChild(logLine);
     logContent.scrollTop = logContent.scrollHeight;
@@ -201,16 +201,16 @@ function setupUnlock() {
     if (!homescreen) return;
     
     // Click anywhere to unlock
-    homescreen.addEventListener('click', (e) => {
-        if (!e.target.closest('.terminal-panel')) {
+    homescreen.addEventListener('click', (event) => {
+        if (!event.target.closest('.terminal-panel')) {
             unlockToDesktop();
         }
     });
     
     // Keyboard unlock
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', (event) => {
         if (homescreen.classList.contains('visible') && !homescreen.classList.contains('fade-out')) {
-            if (e.key === 'Enter' || e.key === ' ') {
+            if (event.key === 'Enter' || event.key === ' ') {
                 unlockToDesktop();
             }
         }
@@ -219,17 +219,17 @@ function setupUnlock() {
 
 // Panel click handlers
 function setupWidgets() {
-    const panels = document.querySelectorAll('.terminal-panel');
-    panels.forEach(panel => {
-        panel.addEventListener('click', (e) => {
-            e.stopPropagation();
+    const terminalPanels = document.querySelectorAll('.terminal-panel');
+    terminalPanels.forEach(panel => {
+        panel.addEventListener('click', (event) => {
+            event.stopPropagation();
             
-            const action = panel.dataset.action;
-            if (action) {
+            const panelAction = panel.dataset.action;
+            if (panelAction) {
                 unlockToDesktop();
                 setTimeout(() => {
                     if (typeof openWindow === 'function') {
-                        openWindow(action);
+                        openWindow(panelAction);
                     }
                 }, 900);
             }
