@@ -10,7 +10,7 @@ setTimeout(() => {
 function openWindow(id) {
     const win = document.getElementById(id);
     win.classList.remove("hidden");
-    makeDraggable(win);
+    initDraggable(win);
     win.style.zIndex = getNextZIndex();
 }
 
@@ -24,38 +24,37 @@ function getNextZIndex() {
     return ++zIndexCounter;
 }
 
-// Track which windows have already been made draggable
-const draggableWindows = new Set();
+// Dragging state
+let activeWindow = null;
+let offsetX = 0;
+let offsetY = 0;
 
-// Dragging system - optimized to prevent event listener accumulation
-function makeDraggable(win) {
-    // Prevent adding duplicate listeners
-    if (draggableWindows.has(win.id)) {
+// Track which windows have been initialized for dragging
+const initializedWindows = new Set();
+
+// Initialize a window for dragging (only adds mousedown listener to titlebar)
+function initDraggable(win) {
+    if (initializedWindows.has(win.id)) {
         return;
     }
-    draggableWindows.add(win.id);
+    initializedWindows.add(win.id);
     
     const bar = win.querySelector(".titlebar");
-    let offsetX = 0, offsetY = 0, isDown = false;
-
     bar.addEventListener("mousedown", (e) => {
-        isDown = true;
+        activeWindow = win;
         offsetX = e.clientX - win.offsetLeft;
         offsetY = e.clientY - win.offsetTop;
         win.style.zIndex = getNextZIndex();
     });
-
-    // Use named functions to avoid creating new function references
-    function handleMouseUp() {
-        isDown = false;
-    }
-    
-    function handleMouseMove(e) {
-        if (!isDown) return;
-        win.style.left = `${e.clientX - offsetX}px`;
-        win.style.top = `${e.clientY - offsetY}px`;
-    }
-
-    document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("mousemove", handleMouseMove);
 }
+
+// Global event delegation for mouse events (single listeners for all windows)
+document.addEventListener("mouseup", () => {
+    activeWindow = null;
+});
+
+document.addEventListener("mousemove", (e) => {
+    if (!activeWindow) return;
+    activeWindow.style.left = `${e.clientX - offsetX}px`;
+    activeWindow.style.top = `${e.clientY - offsetY}px`;
+});

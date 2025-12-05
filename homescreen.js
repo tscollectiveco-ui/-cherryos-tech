@@ -66,7 +66,7 @@ function initMatrixRain() {
             // Reinitialize drops array for new column count
             const newDrops = [];
             for (let i = 0; i < columns; i++) {
-                newDrops[i] = drops[i] !== undefined ? drops[i] : Math.random() * -100;
+                newDrops[i] = i < drops.length ? drops[i] : Math.random() * -100;
             }
             drops = newDrops;
         }, 150);
