@@ -20,10 +20,11 @@ function getCachedElement(selector) {
 }
 
 function getCachedElementById(id) {
-    if (!cachedElements['#' + id]) {
-        cachedElements['#' + id] = document.getElementById(id);
+    const key = 'id:' + id;
+    if (!cachedElements[key]) {
+        cachedElements[key] = document.getElementById(id);
     }
-    return cachedElements['#' + id];
+    return cachedElements[key];
 }
 
 // Clear all homescreen intervals
@@ -56,7 +57,7 @@ function clearHomescreenIntervals() {
         window.removeEventListener('resize', resizeHandler);
         resizeHandler = null;
     }
-    // Clear cached elements when leaving homescreen
+    // Clear cached elements when leaving homescreen since they won't be reused
     cachedElements = {};
 }
 
