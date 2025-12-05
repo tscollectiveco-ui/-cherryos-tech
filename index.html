@@ -1,24 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CherryOS Chat</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CherryOS Desktop</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div class="window">
-    <div class="window-header">message to you ♡</div>
-    <div class="chat-box" id="chat"></div>
 
-    <div class="input-area">
-      <input id="userInput" type="text" placeholder="type something..." />
-      <button id="sendBtn">send</button>
+    <!-- Boot Screen -->
+    <div id="boot-screen">
+        <div class="boot-logo">🍒 CherryOS</div>
+        <div class="boot-bar"><div class="boot-fill"></div></div>
     </div>
-  </div>
 
-  <script src="chat.js"></script>
+    <!-- Desktop -->
+    <div id="desktop" class="hidden">
+
+        <!-- Wallpaper overlay glow -->
+        <div id="neon-glow"></div>
+
+        <!-- Dock -->
+        <div id="dock">
+            <div class="dock-icon" onclick="openWindow('chat')">💬</div>
+            <div class="dock-icon" onclick="openWindow('notes')">📝</div>
+            <div class="dock-icon" onclick="openWindow('files')">📁</div>
+            <div class="dock-icon" onclick="openWindow('settings')">⚙️</div>
+        </div>
+
+        <!-- Windows -->
+        <div id="chat" class="window hidden">
+            <div class="titlebar">
+                <span>CherryOS Chat 🍒</span>
+                <button class="close" onclick="closeWindow('chat')">×</button>
+            </div>
+
+            <!-- iFrame of your chat page -->
+            <iframe src="chat.html"></iframe>
+        </div>
+
+        <div id="notes" class="window hidden">
+            <div class="titlebar">
+                <span>Notes</span>
+                <button class="close" onclick="closeWindow('notes')">×</button>
+            </div>
+            <textarea class="notes-area" placeholder="Write something cute…"></textarea>
+        </div>
+
+        <div id="files" class="window hidden">
+            <div class="titlebar">
+                <span>Files</span>
+                <button class="close" onclick="closeWindow('files')">×</button>
+            </div>
+            <p class="inside">Your files would show here 💗</p>
+        </div>
+
+        <div id="settings" class="window hidden">
+            <div class="titlebar">
+                <span>Settings</span>
+                <button class="close" onclick="closeWindow('settings')">×</button>
+            </div>
+            <p class="inside">CherryOS hybrid cyber-cute system settings ⚙️</p>
+        </div>
+
+    </div>
+
+<script src="os.js"></script>
 </body>
 </html>
