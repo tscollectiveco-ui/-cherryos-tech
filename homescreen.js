@@ -5,34 +5,34 @@ function initMatrixRain() {
     const canvas = document.getElementById('matrix-rain');
     if (!canvas) return;
     
-    const ctx = canvas.getContext('2d');
+    const canvasContext = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
-    const chars = '♥01アイウエオカキクケコ10♥HACK3R♥';
+    const matrixCharacters = '♥01アイウエオカキクケコ10♥HACK3R♥';
     const fontSize = 14;
     const columns = canvas.width / fontSize;
-    const drops = [];
+    const dropPositions = [];
     
     for (let i = 0; i < columns; i++) {
-        drops[i] = Math.random() * -100;
+        dropPositions[i] = Math.random() * -100;
     }
     
     function draw() {
-        ctx.fillStyle = 'rgba(26, 10, 20, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        canvasContext.fillStyle = 'rgba(26, 10, 20, 0.05)';
+        canvasContext.fillRect(0, 0, canvas.width, canvas.height);
         
-        ctx.fillStyle = '#ff69b4';
-        ctx.font = fontSize + 'px monospace';
+        canvasContext.fillStyle = '#ff69b4';
+        canvasContext.font = fontSize + 'px monospace';
         
-        for (let i = 0; i < drops.length; i++) {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        for (let i = 0; i < dropPositions.length; i++) {
+            const text = matrixCharacters[Math.floor(Math.random() * matrixCharacters.length)];
+            canvasContext.fillText(text, i * fontSize, dropPositions[i] * fontSize);
             
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
+            if (dropPositions[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                dropPositions[i] = 0;
             }
-            drops[i]++;
+            dropPositions[i]++;
         }
     }
     
@@ -45,17 +45,17 @@ function initMatrixRain() {
 }
 
 // Create floating heart particles
-function createParticles() {
+function createHeartParticles() {
     const homescreen = document.getElementById('homescreen');
     if (!homescreen) return;
     
     const particleCount = 12;
-    const hearts = ['♥', '♡', '❤', '💗'];
+    const heartSymbols = ['♥', '♡', '❤', '💗'];
     
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
-        particle.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        particle.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
         particle.style.animationDelay = Math.random() * 5 + 's';
@@ -66,7 +66,7 @@ function createParticles() {
 }
 
 // Update time display (24-hour hacker format)
-function updateTime() {
+function updateTimeDisplay() {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -78,30 +78,30 @@ function updateTime() {
     }
     
     // Update date
-    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const dateFormatOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     const dateElement = document.querySelector('.hacker-time .date-display');
     if (dateElement) {
-        dateElement.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
+        dateElement.textContent = now.toLocaleDateString('en-US', dateFormatOptions).toUpperCase();
     }
 }
 
 // Update uptime counter
 let uptimeSeconds = 0;
-function updateUptime() {
+function updateUptimeCounter() {
     uptimeSeconds++;
-    const hours = Math.floor(uptimeSeconds / 3600).toString().padStart(2, '0');
-    const minutes = Math.floor((uptimeSeconds % 3600) / 60).toString().padStart(2, '0');
-    const seconds = (uptimeSeconds % 60).toString().padStart(2, '0');
+    const uptimeHours = Math.floor(uptimeSeconds / 3600).toString().padStart(2, '0');
+    const uptimeMinutes = Math.floor((uptimeSeconds % 3600) / 60).toString().padStart(2, '0');
+    const uptimeSecondsDisplay = (uptimeSeconds % 60).toString().padStart(2, '0');
     
     const uptimeElement = document.getElementById('uptime-counter');
     if (uptimeElement) {
-        uptimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+        uptimeElement.textContent = `${uptimeHours}:${uptimeMinutes}:${uptimeSecondsDisplay}`;
     }
 }
 
 // Simulate packet counter
 let packetCount = 0;
-function updatePackets() {
+function updatePacketCounter() {
     packetCount += Math.floor(Math.random() * 5);
     const packetElement = document.getElementById('packet-count');
     if (packetElement) {
@@ -110,18 +110,18 @@ function updatePackets() {
 }
 
 // Simulate resource usage
-function updateResources() {
-    const cpu = 15 + Math.floor(Math.random() * 25);
-    const mem = 40 + Math.floor(Math.random() * 20);
-    const net = 5 + Math.floor(Math.random() * 20);
+function updateResourceBars() {
+    const cpuUsagePercent = 15 + Math.floor(Math.random() * 25);
+    const memoryUsagePercent = 40 + Math.floor(Math.random() * 20);
+    const networkUsagePercent = 5 + Math.floor(Math.random() * 20);
     
-    document.getElementById('cpu-val').textContent = cpu + '%';
-    document.getElementById('mem-val').textContent = mem + '%';
-    document.getElementById('net-val').textContent = net + '%';
+    document.getElementById('cpu-val').textContent = cpuUsagePercent + '%';
+    document.getElementById('mem-val').textContent = memoryUsagePercent + '%';
+    document.getElementById('net-val').textContent = networkUsagePercent + '%';
     
-    document.querySelector('.cpu-bar').style.width = cpu + '%';
-    document.querySelector('.mem-bar').style.width = mem + '%';
-    document.querySelector('.net-bar').style.width = net + '%';
+    document.querySelector('.cpu-bar').style.width = cpuUsagePercent + '%';
+    document.querySelector('.mem-bar').style.width = memoryUsagePercent + '%';
+    document.querySelector('.net-bar').style.width = networkUsagePercent + '%';
 }
 
 // Add exploit log messages
@@ -138,7 +138,7 @@ const exploitMessages = [
     '[!] Extracting data...',
 ];
 
-function addExploitLog() {
+function addExploitLogMessage() {
     const logContent = document.getElementById('exploit-log');
     if (!logContent) return;
     
@@ -164,67 +164,67 @@ function addExploitLog() {
 // Initialize homescreen
 function initHomescreen() {
     initMatrixRain();
-    createParticles();
-    updateTime();
+    createHeartParticles();
+    updateTimeDisplay();
     
     // Update time every second
-    setInterval(updateTime, 1000);
-    setInterval(updateUptime, 1000);
-    setInterval(updatePackets, 2000);
-    setInterval(updateResources, 3000);
-    setInterval(addExploitLog, 4000);
+    setInterval(updateTimeDisplay, 1000);
+    setInterval(updateUptimeCounter, 1000);
+    setInterval(updatePacketCounter, 2000);
+    setInterval(updateResourceBars, 3000);
+    setInterval(addExploitLogMessage, 4000);
 }
 
 // Transition to desktop
-function unlockToDesktop() {
-    const homescreen = document.getElementById('homescreen');
-    const desktop = document.getElementById('desktop');
+function transitionToDesktop() {
+    const homescreenElement = document.getElementById('homescreen');
+    const desktopElement = document.getElementById('desktop');
     
-    if (homescreen && desktop) {
-        homescreen.classList.add('fade-out');
+    if (homescreenElement && desktopElement) {
+        homescreenElement.classList.add('fade-out');
         
         setTimeout(() => {
-            homescreen.style.display = 'none';
-            desktop.classList.remove('hidden');
+            homescreenElement.style.display = 'none';
+            desktopElement.classList.remove('hidden');
         }, 800);
     }
 }
 
 // Handle click/tap to unlock
-function setupUnlock() {
-    const homescreen = document.getElementById('homescreen');
-    if (!homescreen) return;
+function setupUnlockHandlers() {
+    const homescreenElement = document.getElementById('homescreen');
+    if (!homescreenElement) return;
     
     // Click anywhere to unlock
-    homescreen.addEventListener('click', (e) => {
-        if (!e.target.closest('.terminal-panel')) {
-            unlockToDesktop();
+    homescreenElement.addEventListener('click', (event) => {
+        if (!event.target.closest('.terminal-panel')) {
+            transitionToDesktop();
         }
     });
     
     // Keyboard unlock
-    document.addEventListener('keydown', (e) => {
-        if (homescreen.classList.contains('visible') && !homescreen.classList.contains('fade-out')) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                unlockToDesktop();
+    document.addEventListener('keydown', (event) => {
+        if (homescreenElement.classList.contains('visible') && !homescreenElement.classList.contains('fade-out')) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                transitionToDesktop();
             }
         }
     });
 }
 
 // Panel click handlers
-function setupWidgets() {
-    const panels = document.querySelectorAll('.terminal-panel');
-    panels.forEach(panel => {
-        panel.addEventListener('click', (e) => {
-            e.stopPropagation();
+function setupWidgetPanelHandlers() {
+    const terminalPanels = document.querySelectorAll('.terminal-panel');
+    terminalPanels.forEach(panel => {
+        panel.addEventListener('click', (event) => {
+            event.stopPropagation();
             
-            const action = panel.dataset.action;
-            if (action) {
-                unlockToDesktop();
+            const panelAction = panel.dataset.action;
+            if (panelAction) {
+                transitionToDesktop();
                 setTimeout(() => {
                     if (typeof openWindow === 'function') {
-                        openWindow(action);
+                        openWindow(panelAction);
                     }
                 }, 900);
             }
@@ -234,15 +234,15 @@ function setupWidgets() {
 
 // Show homescreen after boot
 function showHomescreen() {
-    const homescreen = document.getElementById('homescreen');
-    if (homescreen) {
-        homescreen.classList.add('visible');
+    const homescreenElement = document.getElementById('homescreen');
+    if (homescreenElement) {
+        homescreenElement.classList.add('visible');
         initHomescreen();
-        setupUnlock();
-        setupWidgets();
+        setupUnlockHandlers();
+        setupWidgetPanelHandlers();
     }
 }
 
 // Export for use in os.js
 window.showHomescreen = showHomescreen;
-window.unlockToDesktop = unlockToDesktop;
+window.transitionToDesktop = transitionToDesktop;
