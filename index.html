@@ -52,24 +52,43 @@
             </pre>
             <div class="system-tagline">✧ PRETTY BUT DANGEROUS ✧ PENTEST EDITION ✧</div>
 
-            <!-- Terminal panels grid -->
+            <!-- Tool islands grid -->
             <div class="terminal-grid">
+                <!-- Terminal - Expandable -->
+                <div class="terminal-panel expandable" id="terminal-panel" data-expandable="true">
+                    <div class="panel-header">
+                        <span class="panel-icon">♥</span> TERMINAL
+                        <span class="expand-btn" title="Expand">⤢</span>
+                    </div>
+                    <div class="panel-content terminal-content" id="terminal-output">
+                        <div class="terminal-line">cherry@pentest:~$ whoami</div>
+                        <div class="terminal-line output">cherry</div>
+                        <div class="terminal-line">cherry@pentest:~$ nmap -sV 192.168.1.1</div>
+                        <div class="terminal-line output">Starting Nmap scan...</div>
+                    </div>
+                    <div class="terminal-input-wrap">
+                        <span class="prompt">cherry@pentest:~$</span>
+                        <input type="text" class="terminal-input" id="terminal-input" placeholder="type command..." autocomplete="off">
+                    </div>
+                </div>
+
                 <!-- Network Monitor -->
                 <div class="terminal-panel" data-action="chat">
                     <div class="panel-header">
-                        <span class="panel-icon">♥</span> NETWORK SCAN
+                        <span class="panel-icon">♥</span> NETWORK
                     </div>
                     <div class="panel-content">
                         <div class="net-line">├─ 192.168.1.1 <span class="ping-ok">[OWNED ♥]</span></div>
                         <div class="net-line">├─ 10.0.0.45 <span class="ping-warn">[SCANNING...]</span></div>
-                        <div class="net-line">└─ <span id="packet-count">0</span> packets sniffed</div>
+                        <div class="net-line">└─ <span id="packet-count">0</span> packets</div>
                     </div>
                 </div>
 
                 <!-- System Stats -->
-                <div class="terminal-panel">
+                <div class="terminal-panel expandable" data-expandable="true">
                     <div class="panel-header">
-                        <span class="panel-icon">♥</span> SYSTEM STATS
+                        <span class="panel-icon">♥</span> STATS
+                        <span class="expand-btn" title="Expand">⤢</span>
                     </div>
                     <div class="panel-content">
                         <div class="resource-bar">
@@ -90,26 +109,14 @@
                     </div>
                 </div>
 
-                <!-- Active Services -->
-                <div class="terminal-panel" data-action="notes">
-                    <div class="panel-header">
-                        <span class="panel-icon">♥</span> SERVICES
-                    </div>
-                    <div class="panel-content services-list">
-                        <div class="service"><span class="service-status on">♥</span> SSH :22</div>
-                        <div class="service"><span class="service-status on">♥</span> HTTP :80</div>
-                        <div class="service"><span class="service-status on">♥</span> HTTPS :443</div>
-                        <div class="service"><span class="service-status warn">◇</span> FTP :21</div>
-                    </div>
-                </div>
-
                 <!-- Exploit Log -->
-                <div class="terminal-panel">
+                <div class="terminal-panel expandable" data-expandable="true">
                     <div class="panel-header">
                         <span class="panel-icon">♥</span> EXPLOIT LOG
+                        <span class="expand-btn" title="Expand">⤢</span>
                     </div>
                     <div class="panel-content log-content" id="exploit-log">
-                        <div class="log-line">[♥] Loading cute payloads...</div>
+                        <div class="log-line">[♥] Loading payloads...</div>
                         <div class="log-line">[+] Metasploit ready~</div>
                         <div class="log-line">[+] Nmap scanning...</div>
                         <div class="log-line">[!] Ready to hack ♥</div>
@@ -127,6 +134,20 @@
         <!-- Unlock hint -->
         <div class="unlock-hint">
             <div class="unlock-text">✧ PRESS [ENTER] OR CLICK TO HACK ♥ _</div>
+        </div>
+
+        <!-- AI Helper Corner Box -->
+        <div class="ai-helper-corner" id="ai-helper">
+            <div class="ai-helper-header">
+                <span class="ai-icon">🤖</span>
+                <span class="ai-title">CHERRY AI</span>
+                <span class="ai-status online">●</span>
+            </div>
+            <div class="ai-helper-content" id="ai-helper-content">
+                <div class="ai-message">
+                    <span class="ai-label">♥ AI:</span> Hello! I'm Cherry AI, your hacking assistant~ ♥
+                </div>
+            </div>
         </div>
     </div>
 

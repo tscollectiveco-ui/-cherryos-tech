@@ -207,10 +207,22 @@ function setupUnlock() {
         }
     });
     
-    // Keyboard unlock
+    // Consolidated keyboard handler for unlock and panel controls
     document.addEventListener('keydown', (e) => {
+        // ESC to close expanded panels
+        if (e.key === 'Escape') {
+            const expandedPanel = document.querySelector('.terminal-panel.expanded');
+            if (expandedPanel) {
+                togglePanelExpand(expandedPanel);
+                return;
+            }
+        }
+        
+        // Enter/Space to unlock homescreen
         if (homescreen.classList.contains('visible') && !homescreen.classList.contains('fade-out')) {
             if (e.key === 'Enter' || e.key === ' ') {
+                // Don't unlock if typing in terminal input
+                if (e.target.classList.contains('terminal-input')) return;
                 unlockToDesktop();
             }
         }
@@ -245,9 +257,225 @@ function showHomescreen() {
         initHomescreen();
         setupUnlock();
         setupWidgets();
+        setupExpandablePanels();
+        setupTerminalWithAI();
+    }
+}
+
+// Setup expandable panels
+function setupExpandablePanels() {
+    // Create overlay element
+    const overlay = document.createElement('div');
+    overlay.className = 'panel-overlay';
+    overlay.id = 'panel-overlay';
+    document.getElementById('homescreen').appendChild(overlay);
+    
+    // Setup expand buttons
+    const expandBtns = document.querySelectorAll('.expand-btn');
+    expandBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const panel = btn.closest('.terminal-panel');
+            togglePanelExpand(panel);
+        });
+    });
+    
+    // Click overlay to close
+    overlay.addEventListener('click', () => {
+        const expandedPanel = document.querySelector('.terminal-panel.expanded');
+        if (expandedPanel) {
+            togglePanelExpand(expandedPanel);
+        }
+    });
+}
+
+// Delay for focus after panel expansion (ms)
+const PANEL_FOCUS_DELAY = 100;
+
+function togglePanelExpand(panel) {
+    const overlay = document.getElementById('panel-overlay');
+    const isExpanded = panel.classList.contains('expanded');
+    
+    if (isExpanded) {
+        panel.classList.remove('expanded');
+        overlay.classList.remove('visible');
+    } else {
+        // Close any other expanded panels
+        document.querySelectorAll('.terminal-panel.expanded').forEach(p => {
+            p.classList.remove('expanded');
+        });
+        panel.classList.add('expanded');
+        overlay.classList.add('visible');
+        
+        // Focus terminal input if it's the terminal panel
+        const termInput = panel.querySelector('.terminal-input');
+        if (termInput) {
+            setTimeout(() => termInput.focus(), PANEL_FOCUS_DELAY);
+        }
     }
 }
 
 // Export for use in os.js
 window.showHomescreen = showHomescreen;
 window.unlockToDesktop = unlockToDesktop;
+
+// AI Helper functionality
+const aiResponses = {
+    'whoami': '✓ Identity confirmed: cherry. You\'re the admin~ ♥',
+    'help': '📋 Showing available commands. Try "hack" for fun!',
+    'pwd': '📁 Current directory: /home/cherry/pentest',
+    'ls': '📂 Listing files... I see some juicy exploits!',
+    'date': '🕐 System time synchronized.',
+    'clear': '🧹 Terminal cleared. Fresh start!',
+    'hack': '⚡ Initiating hack sequence... I\'ll monitor the process!',
+    'scan': '🔍 Network scan started. Detecting vulnerable hosts...',
+    'default': '❓ Unknown command. Type "help" for available options~'
+};
+
+const aiTips = [
+    '💡 Tip: Use "scan" to find vulnerable hosts!',
+    '💡 Tip: Try "hack" to start an exploit sequence~',
+    '💡 Tip: Check "ls" to see available exploits!',
+    '💡 Tip: Network panel shows owned targets ♥',
+    '💡 Tip: Click ⤢ to expand any panel!',
+];
+
+// Store interval ID for cleanup
+let aiTipIntervalId = null;
+
+function initAIHelper() {
+    const aiContent = document.getElementById('ai-helper-content');
+    if (!aiContent) return;
+    
+    // Show random tip after a delay
+    setTimeout(() => {
+        const tip = aiTips[Math.floor(Math.random() * aiTips.length)];
+        addAIMessage(tip, 'default');
+    }, 3000);
+    
+    // Periodically show tips (store ID for potential cleanup)
+    aiTipIntervalId = setInterval(() => {
+        // Only show tips if homescreen is still visible
+        const homescreen = document.getElementById('homescreen');
+        if (!homescreen || !homescreen.classList.contains('visible')) {
+            clearInterval(aiTipIntervalId);
+            return;
+        }
+        if (Math.random() > 0.7) {
+            const tip = aiTips[Math.floor(Math.random() * aiTips.length)];
+            addAIMessage(tip, 'default');
+        }
+    }, 15000);
+}
+
+function addAIMessage(message, type = 'default') {
+    const aiContent = document.getElementById('ai-helper-content');
+    if (!aiContent) return;
+    
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'ai-message';
+    if (type === 'success') msgDiv.classList.add('success');
+    if (type === 'warning') msgDiv.classList.add('warning');
+    if (type === 'thinking') msgDiv.classList.add('thinking');
+    
+    // Create label span safely
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'ai-label';
+    labelSpan.textContent = '♥ AI: ';
+    msgDiv.appendChild(labelSpan);
+    
+    // Add message text safely using textContent
+    const textNode = document.createTextNode(message);
+    msgDiv.appendChild(textNode);
+    
+    aiContent.appendChild(msgDiv);
+    aiContent.scrollTop = aiContent.scrollHeight;
+    
+    // Keep only last 5 messages
+    while (aiContent.children.length > 5) {
+        aiContent.removeChild(aiContent.firstChild);
+    }
+}
+
+function aiReviewCommand(cmd) {
+    // Show thinking state
+    addAIMessage('Analyzing command...', 'thinking');
+    
+    // Delayed response for effect
+    setTimeout(() => {
+        // Remove thinking message
+        const aiContent = document.getElementById('ai-helper-content');
+        const thinkingMsg = aiContent.querySelector('.ai-message.thinking');
+        if (thinkingMsg) thinkingMsg.remove();
+        
+        // Get response - use predefined responses only (safe)
+        const response = aiResponses[cmd] || aiResponses['default'];
+        const type = cmd === 'hack' || cmd === 'scan' ? 'success' : 
+                     aiResponses[cmd] ? 'default' : 'warning';
+        
+        addAIMessage(response, type);
+    }, 500);
+}
+
+// Shared terminal commands (single source of truth)
+const terminalCommands = {
+    'help': '♥ Available: help, whoami, date, clear, hack, scan, pwd, ls',
+    'whoami': 'cherry',
+    'pwd': '/home/cherry/pentest',
+    'ls': 'exploits/  payloads/  targets.txt  notes.md',
+    'date': () => new Date().toString(),
+    'clear': () => 'CLEAR',
+    'hack': '[♥] Initiating hack sequence... Access granted!',
+    'scan': '[+] Scanning network... Found 3 vulnerable hosts ♥',
+};
+
+// Setup terminal with AI integration
+function setupTerminalWithAI() {
+    const termInput = document.getElementById('terminal-input');
+    const termOutput = document.getElementById('terminal-output');
+    
+    if (!termInput || !termOutput) return;
+    
+    termInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const cmd = termInput.value.trim().toLowerCase();
+            if (cmd) {
+                // AI reviews the command
+                aiReviewCommand(cmd);
+                
+                // Add command line
+                const cmdLine = document.createElement('div');
+                cmdLine.className = 'terminal-line';
+                cmdLine.textContent = `cherry@pentest:~$ ${termInput.value}`;
+                termOutput.appendChild(cmdLine);
+                
+                // Process command
+                if (cmd === 'clear') {
+                    while (termOutput.firstChild) {
+                        termOutput.removeChild(termOutput.firstChild);
+                    }
+                } else {
+                    const response = terminalCommands[cmd];
+                    const outputLine = document.createElement('div');
+                    outputLine.className = 'terminal-line output';
+                    if (typeof response === 'function') {
+                        outputLine.textContent = response();
+                    } else if (response) {
+                        outputLine.textContent = response;
+                    } else {
+                        outputLine.textContent = `Command not found: ${cmd}. Type 'help' ♥`;
+                        outputLine.style.color = '#ffd700';
+                    }
+                    termOutput.appendChild(outputLine);
+                }
+                
+                termOutput.scrollTop = termOutput.scrollHeight;
+                termInput.value = '';
+            }
+        }
+    });
+    
+    // Initialize AI helper
+    initAIHelper();
+}
