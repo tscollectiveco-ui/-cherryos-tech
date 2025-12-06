@@ -304,7 +304,7 @@ function submitPuzzle() {
 
 function showHint() {
     if (hintsRemaining <= 0) {
-        alert('No hints remaining!');
+        showToast('No hints remaining!');
         return;
     }
     
@@ -316,8 +316,21 @@ function showHint() {
         hintsRemaining--;
         document.getElementById('hints-left').textContent = hintsRemaining;
     } else {
-        alert('Open a puzzle first to use a hint!');
+        showToast('Open a puzzle first to use a hint!');
     }
+}
+
+// Toast notification system
+function showToast(message) {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
 }
 
 function resetVault() {
@@ -339,14 +352,3 @@ document.addEventListener('keydown', (e) => {
         submitPuzzle();
     }
 });
-
-// Add shake animation for wrong code
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20%, 60% { transform: translateX(-10px); }
-        40%, 80% { transform: translateX(10px); }
-    }
-`;
-document.head.appendChild(style);
