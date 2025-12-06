@@ -138,13 +138,29 @@
 
         <!-- Dock -->
         <div id="dock">
+            <div class="dock-icon" onclick="openWindow('clock-widget')">🕐</div>
             <div class="dock-icon" onclick="openWindow('chat')">💬</div>
             <div class="dock-icon" onclick="openWindow('notes')">📝</div>
             <div class="dock-icon" onclick="openWindow('files')">📁</div>
+            <div class="dock-icon" onclick="openWindow('vault')">🔐</div>
             <div class="dock-icon" onclick="openWindow('settings')">⚙️</div>
         </div>
 
         <!-- Windows -->
+
+        <!-- Digital Clock Widget -->
+        <div id="clock-widget" class="window hidden">
+            <div class="titlebar">
+                <span>🕐 Digital Clock</span>
+                <button class="close" onclick="closeWindow('clock-widget')">×</button>
+            </div>
+            <div class="clock-container">
+                <div class="digital-clock" id="digital-clock-display">00:00</div>
+                <div class="clock-seconds" id="clock-seconds">:00</div>
+                <div class="clock-date" id="clock-date-display">Loading...</div>
+            </div>
+        </div>
+
         <div id="chat" class="window hidden">
             <div class="titlebar">
                 <span>CherryOS Chat 🍒</span>
@@ -177,6 +193,78 @@
                 <button class="close" onclick="closeWindow('settings')">×</button>
             </div>
             <p class="inside">CherryOS hybrid cyber-cute system settings ⚙️</p>
+        </div>
+
+        <!-- Vault Window -->
+        <div id="vault" class="window hidden">
+            <div class="titlebar">
+                <span>🔐 Secret Vault</span>
+                <button class="close" onclick="closeWindow('vault')">×</button>
+            </div>
+            <div class="vault-container">
+                <!-- Lock Screen -->
+                <div class="vault-lock-screen" id="vault-lock">
+                    <div class="vault-lock-icon">🔒</div>
+                    <div class="vault-title">SECRET VAULT</div>
+                    <div class="vault-hint">Enter the 4-digit code to unlock<br><small>Hint: Think cherry 🍒</small></div>
+                    <div class="code-display" id="code-display">
+                        <div class="code-digit"></div>
+                        <div class="code-digit"></div>
+                        <div class="code-digit"></div>
+                        <div class="code-digit"></div>
+                    </div>
+                    <div class="vault-keypad">
+                        <button class="keypad-btn" onclick="vaultKeyPress(1)">1</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(2)">2</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(3)">3</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(4)">4</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(5)">5</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(6)">6</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(7)">7</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(8)">8</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(9)">9</button>
+                        <button class="keypad-btn clear" onclick="vaultClear()">C</button>
+                        <button class="keypad-btn" onclick="vaultKeyPress(0)">0</button>
+                        <button class="keypad-btn enter" onclick="vaultSubmit()">✓</button>
+                    </div>
+                    <div class="vault-error" id="vault-error"></div>
+                </div>
+
+                <!-- Vault Interior (Escape Room) -->
+                <div class="vault-interior" id="vault-interior">
+                    <div class="vault-header">
+                        <span class="vault-level">🏆 Level: <span id="vault-level">1</span>/3</span>
+                        <span class="vault-hints">
+                            <button class="hint-btn" onclick="showHint()">💡 Hint (<span id="hints-left">3</span>)</button>
+                        </span>
+                    </div>
+                    <div class="vault-room" id="vault-room">
+                        <!-- Items populated by JS -->
+                    </div>
+
+                    <!-- Puzzle Modal -->
+                    <div class="puzzle-modal" id="puzzle-modal">
+                        <div class="puzzle-header">
+                            <span class="puzzle-title" id="puzzle-title">Puzzle</span>
+                            <button class="puzzle-close" onclick="closePuzzle()">×</button>
+                        </div>
+                        <div class="puzzle-content">
+                            <div class="puzzle-description" id="puzzle-description"></div>
+                            <input type="text" class="puzzle-input" id="puzzle-input" placeholder="Your answer..." autocomplete="off">
+                            <button class="puzzle-submit" onclick="submitPuzzle()">Submit</button>
+                            <div class="puzzle-feedback" id="puzzle-feedback"></div>
+                        </div>
+                    </div>
+
+                    <!-- Victory Screen -->
+                    <div class="victory-screen" id="victory-screen">
+                        <div class="victory-icon">🎉</div>
+                        <div class="victory-title">VAULT MASTER!</div>
+                        <div class="victory-message">You've solved all the puzzles and unlocked the secret vault!</div>
+                        <button class="victory-restart" onclick="resetVault()">Play Again</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
