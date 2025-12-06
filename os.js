@@ -20,7 +20,8 @@ function closeWindow(id) {
 
 // Dragging system
 function makeDraggable(win) {
-    const bar = win.querySelector(".titlebar");
+    const bar = win.querySelector(".titlebar") || win.querySelector(".shell-header");
+    if (!bar) return;
     let offsetX = 0, offsetY = 0, isDown = false;
 
     bar.addEventListener("mousedown", (e) => {
