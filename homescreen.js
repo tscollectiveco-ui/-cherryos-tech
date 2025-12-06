@@ -16,14 +16,24 @@ function initMatrixRain() {
     
     const chars = '♥01アイウエオカキクケコ10♥HACK3R♥';
     const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = [];
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops = [];
     
     for (let i = 0; i < columns; i++) {
         drops[i] = Math.random() * -100;
     }
     
-    function draw() {
+    let lastFrameTime = 0;
+    const frameInterval = 50; // ~20fps
+    
+    function draw(timestamp) {
+        // Throttle to maintain consistent frame rate
+        if (timestamp - lastFrameTime < frameInterval) {
+            requestAnimationFrame(draw);
+            return;
+        }
+        lastFrameTime = timestamp;
+        
         ctx.fillStyle = 'rgba(26, 10, 20, 0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
@@ -39,13 +49,27 @@ function initMatrixRain() {
             }
             drops[i]++;
         }
+        
+        requestAnimationFrame(draw);
     }
     
-    setInterval(draw, 50);
+    requestAnimationFrame(draw);
     
+    // Debounced resize handler
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            columns = Math.floor(canvas.width / fontSize);
+            // Reinitialize drops array for new column count
+            const newDrops = [];
+            for (let i = 0; i < columns; i++) {
+                newDrops[i] = i < drops.length ? drops[i] : Math.random() * -100;
+            }
+            drops = newDrops;
+        }, 150);
     });
 }
 
@@ -70,64 +94,101 @@ function createParticles() {
     }
 }
 
+// Cache DOM element references for time updates
+let timeElement, dateElement;
+
 // Update time display (24-hour hacker format)
 function updateTime() {
+    // Initialize cached elements on first call
+    if (!timeElement) {
+        timeElement = document.querySelector('.hacker-time .time-display');
+        dateElement = document.querySelector('.hacker-time .date-display');
+    }
+    
     const now = new Date();
     const hours = formatTimeValue(now.getHours());
     const minutes = formatTimeValue(now.getMinutes());
     const seconds = formatTimeValue(now.getSeconds());
     
-    const timeElement = document.querySelector('.hacker-time .time-display');
     if (timeElement) {
         timeElement.textContent = `${hours}:${minutes}:${seconds}`;
     }
     
     // Update date
     const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-    const dateElement = document.querySelector('.hacker-time .date-display');
     if (dateElement) {
         dateElement.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
     }
 }
 
+// Cache DOM element reference for uptime
+let uptimeElement;
+
 // Update uptime counter
 let uptimeSeconds = 0;
 function updateUptime() {
+    // Initialize cached element on first call
+    if (!uptimeElement) {
+        uptimeElement = document.getElementById('uptime-counter');
+    }
+    
     uptimeSeconds++;
     const hours = formatTimeValue(Math.floor(uptimeSeconds / 3600));
     const minutes = formatTimeValue(Math.floor((uptimeSeconds % 3600) / 60));
     const seconds = formatTimeValue(uptimeSeconds % 60);
     
-    const uptimeElement = document.getElementById('uptime-counter');
     if (uptimeElement) {
         uptimeElement.textContent = `${hours}:${minutes}:${seconds}`;
     }
 }
 
+// Cache DOM element reference for packet counter
+let packetElement;
+
 // Simulate packet counter
 let packetCount = 0;
 function updatePackets() {
+    // Initialize cached element on first call
+    if (!packetElement) {
+        packetElement = document.getElementById('packet-count');
+    }
+    
     packetCount += Math.floor(Math.random() * 5);
-    const packetElement = document.getElementById('packet-count');
     if (packetElement) {
         packetElement.textContent = packetCount;
     }
 }
 
+// Cache DOM element references for resource updates
+let cpuValEl, memValEl, netValEl, cpuBarEl, memBarEl, netBarEl;
+
 // Simulate resource usage
 function updateResources() {
+    // Initialize cached elements on first call
+    if (!cpuValEl) {
+        cpuValEl = document.getElementById('cpu-val');
+        memValEl = document.getElementById('mem-val');
+        netValEl = document.getElementById('net-val');
+        cpuBarEl = document.querySelector('.cpu-bar');
+        memBarEl = document.querySelector('.mem-bar');
+        netBarEl = document.querySelector('.net-bar');
+    }
+    
     const cpu = 15 + Math.floor(Math.random() * 25);
     const mem = 40 + Math.floor(Math.random() * 20);
     const net = 5 + Math.floor(Math.random() * 20);
     
-    document.getElementById('cpu-val').textContent = cpu + '%';
-    document.getElementById('mem-val').textContent = mem + '%';
-    document.getElementById('net-val').textContent = net + '%';
+    if (cpuValEl) cpuValEl.textContent = cpu + '%';
+    if (memValEl) memValEl.textContent = mem + '%';
+    if (netValEl) netValEl.textContent = net + '%';
     
-    document.querySelector('.cpu-bar').style.width = cpu + '%';
-    document.querySelector('.mem-bar').style.width = mem + '%';
-    document.querySelector('.net-bar').style.width = net + '%';
+    if (cpuBarEl) cpuBarEl.style.width = cpu + '%';
+    if (memBarEl) memBarEl.style.width = mem + '%';
+    if (netBarEl) netBarEl.style.width = net + '%';
 }
+
+// Cache DOM element reference for exploit log
+let exploitLogElement;
 
 // Add exploit log messages
 const exploitMessages = [
@@ -144,8 +205,11 @@ const exploitMessages = [
 ];
 
 function addExploitLog() {
-    const logContent = document.getElementById('exploit-log');
-    if (!logContent) return;
+    // Initialize cached element on first call
+    if (!exploitLogElement) {
+        exploitLogElement = document.getElementById('exploit-log');
+    }
+    if (!exploitLogElement) return;
     
     const message = exploitMessages[Math.floor(Math.random() * exploitMessages.length)];
     const logLine = document.createElement('div');
@@ -157,12 +221,12 @@ function addExploitLog() {
     else if (message.includes('[+]')) logLine.style.color = '#90ee90';
     else if (message.includes('[!]')) logLine.style.color = '#ffd700';
     
-    logContent.appendChild(logLine);
-    logContent.scrollTop = logContent.scrollHeight;
+    exploitLogElement.appendChild(logLine);
+    exploitLogElement.scrollTop = exploitLogElement.scrollHeight;
     
     // Keep only last 6 lines
-    while (logContent.children.length > 6) {
-        logContent.removeChild(logContent.firstChild);
+    while (exploitLogElement.children.length > 6) {
+        exploitLogElement.removeChild(exploitLogElement.firstChild);
     }
 }
 
