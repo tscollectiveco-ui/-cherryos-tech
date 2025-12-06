@@ -27,7 +27,7 @@
         <!-- Top status bar -->
         <div class="hacker-status-bar">
             <div class="status-left">
-                <span class="terminal-prompt">cherry@pentest:~$</span>
+                <span class="prompt">cherry&lt;3:~$</span>
                 <span class="blink-cursor">_</span>
             </div>
             <div class="status-right">
@@ -136,20 +136,42 @@
         <!-- Wallpaper overlay glow -->
         <div id="neon-glow"></div>
 
-        <!-- Dock -->
-        <div id="dock">
-            <div class="dock-icon" onclick="openWindow('chat')">💬</div>
-            <div class="dock-icon" onclick="openWindow('notes')">📝</div>
-            <div class="dock-icon" onclick="openWindow('files')">📁</div>
-            <div class="dock-icon" onclick="openWindow('settings')">⚙️</div>
+        <!-- Aesthetic Decorations -->
+        <div class="deco-image deco-1">
+            <img src="https://via.placeholder.com/150x150/ffb6c1/ff69b4?text=♥" alt="Pixel art popup">
+        </div>
+        <div class="deco-image deco-2">
+            <img src="https://via.placeholder.com/180x120/ffc0cb/ff1493?text=Collage" alt="Collage">
+        </div>
+        <div class="deco-image deco-3">
+            <img src="https://via.placeholder.com/120x120/ffe4e1/ff69b4?text=✿" alt="Face closeup">
+        </div>
+
+        <!-- Desktop Widgets -->
+        <div class="desktop-widget" style="top: 15%; left: 8%;" onclick="openWindow('chat')">
+            <span class="widget-icon">💬</span>
+            <span class="widget-label">Chat</span>
+        </div>
+        <div class="desktop-widget" style="top: 55%; left: 5%;" onclick="openWindow('notes')">
+            <span class="widget-icon">📝</span>
+            <span class="widget-label">Notes</span>
+        </div>
+        <div class="desktop-widget" style="top: 20%; right: 10%;" onclick="openWindow('files')">
+            <span class="widget-icon">📁</span>
+            <span class="widget-label">Files</span>
+        </div>
+        <div class="desktop-widget" style="bottom: 18%; right: 8%;" onclick="openWindow('settings')">
+            <span class="widget-icon">⚙️</span>
+            <span class="widget-label">Settings</span>
         </div>
 
         <!-- Windows -->
         <div id="chat" class="window hidden">
-            <div class="titlebar">
-                <span>CherryOS Chat 🍒</span>
-                <button class="close" onclick="closeWindow('chat')">×</button>
+            <div class="shell-header">
+                <span>cherry&lt;3</span>
+                <span class="close-btn" onclick="closeWindow('chat')">×</span>
             </div>
+            <div class="shell-banner">Welcome to cherry&lt;3 shell</div>
 
             <!-- iFrame of your chat page -->
             <iframe src="chat.html"></iframe>
