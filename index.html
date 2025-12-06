@@ -27,7 +27,7 @@
         <!-- Top status bar -->
         <div class="hacker-status-bar">
             <div class="status-left">
-                <span class="terminal-prompt">cherry@pentest:~$</span>
+                <span class="terminal-prompt prompt">cherry&lt;3:~$</span>
                 <span class="blink-cursor">_</span>
             </div>
             <div class="status-right">
@@ -136,23 +136,36 @@
         <!-- Wallpaper overlay glow -->
         <div id="neon-glow"></div>
 
-        <!-- Dock -->
-        <div id="dock">
-            <div class="dock-icon" onclick="openWindow('chat')">💬</div>
-            <div class="dock-icon" onclick="openWindow('notes')">📝</div>
-            <div class="dock-icon" onclick="openWindow('files')">📁</div>
-            <div class="dock-icon" onclick="openWindow('settings')">⚙️</div>
+        <!-- Desktop Widgets -->
+        <div id="desktop-widgets">
+            <div class="widget" onclick="openWindow('chat')">
+                <span class="widget-icon">💬</span>
+                <span class="widget-label">Chat</span>
+            </div>
+            <div class="widget" onclick="openWindow('notes')">
+                <span class="widget-icon">📝</span>
+                <span class="widget-label">Notes</span>
+            </div>
+            <div class="widget" onclick="openWindow('files')">
+                <span class="widget-icon">📁</span>
+                <span class="widget-label">Files</span>
+            </div>
+            <div class="widget" onclick="openWindow('settings')">
+                <span class="widget-icon">⚙️</span>
+                <span class="widget-label">Settings</span>
+            </div>
         </div>
 
         <!-- Windows -->
         <div id="chat" class="window hidden">
-            <div class="titlebar">
-                <span>CherryOS Chat 🍒</span>
-                <button class="close" onclick="closeWindow('chat')">×</button>
+            <div class="shell-header">
+                <span>🍒 CherryOS Shell</span>
+                <button class="close-btn" onclick="closeWindow('chat')">×</button>
             </div>
+            <div class="shell-banner">Welcome to CherryOS Shell ♥</div>
 
-            <!-- iFrame of your chat page -->
-            <iframe src="chat.html"></iframe>
+            <!-- iFrame of your shell page -->
+            <iframe src="shell.html"></iframe>
         </div>
 
         <div id="notes" class="window hidden">
