@@ -165,3 +165,111 @@ iframe {
 @keyframes fadeOut {
     to { opacity: 0; visibility: hidden; }
 }
+
+/* Shell Header Styles */
+.shell-header {
+    background: rgba(255, 160, 190, 0.28);
+    padding: 10px 14px;
+    font-family: Inter, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    border-bottom: 1px solid rgba(255, 200, 220, 0.28);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 0.3px;
+}
+
+.close-btn {
+    cursor: pointer;
+    opacity: 0.75;
+    transition: 0.2s;
+}
+
+.close-btn:hover {
+    opacity: 1;
+}
+
+.prompt {
+    color: #ff77aa;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.shell-banner {
+    text-align: center;
+    padding: 6px;
+    color: #ffc2d9;
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    opacity: 0.85;
+}
+
+/* Desktop Widgets */
+.desktop-widget {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 4px 20px rgba(255, 0, 153, 0.25);
+    border: 1px solid rgba(255, 200, 220, 0.35);
+}
+
+.desktop-widget:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(255, 0, 153, 0.4);
+}
+
+.widget-icon {
+    font-size: 2rem;
+}
+
+.widget-label {
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #ff69b4;
+    letter-spacing: 0.3px;
+}
+
+/* Aesthetic Decorations */
+.deco-image {
+    position: absolute;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.deco-image img {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+}
+
+.deco-1 {
+    top: 8%;
+    left: 35%;
+    transform: rotate(-5deg);
+}
+
+.deco-2 {
+    bottom: 12%;
+    left: 15%;
+    transform: rotate(3deg);
+}
+
+.deco-3 {
+    top: 40%;
+    right: 5%;
+    transform: rotate(-8deg);
+}
